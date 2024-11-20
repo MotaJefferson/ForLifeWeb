@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Krona+One&display=swap');
+
+.divs-facilidades {
+    width: 325px;
+}
+
+.fundo {
+    background-image: url("/img/background.png");
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+.titulo{
+    font-size: 3.15rem;
+    font-family: "Archivo Black", sans-serif;
+    text-align: center;
+    margin-top: 10%;   
+}
+
+.titulo_inicio{
+    color: rgb(26, 118, 54);
+}
+
+.titulo_meio{
+    color: rgb(58, 149, 30);
+}
+
+.titulo_fim{
+    color: rgb(125, 189, 43);
+}

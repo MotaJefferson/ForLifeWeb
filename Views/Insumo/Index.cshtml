@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ForLifeWeb.Models.Insumo>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.descricao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.tipo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ativo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.periodo_vencimento)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descricao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tipo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ativo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.periodo_vencimento)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id_insumo">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id_insumo">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id_insumo">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
