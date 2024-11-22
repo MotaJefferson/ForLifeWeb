@@ -31,5 +31,9 @@ namespace ForLifeWeb.Models
 
         [DataType(DataType.Date)]
         public DateTime data_registro { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime data_baixa { get; set; }
+
     }
 }

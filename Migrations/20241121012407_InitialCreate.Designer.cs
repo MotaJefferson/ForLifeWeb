@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ForLifeWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241115203109_InitialCreate")]
+    [Migration("20241121012407_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -35,7 +35,8 @@ namespace ForLifeWeb.Migrations
 
                     b.Property<string>("cpf")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("endereco")
                         .IsRequired()
@@ -67,11 +68,18 @@ namespace ForLifeWeb.Migrations
 
                     b.Property<string>("cnpj")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("cpf")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("endereco")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("nome")
                         .IsRequired()
@@ -82,6 +90,11 @@ namespace ForLifeWeb.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("telefone")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("id_fornecedor");
 
@@ -289,6 +302,9 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_estoque"));
 
+                    b.Property<DateTime>("data_baixa")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("data_colheita")
                         .HasColumnType("datetime2");
 
@@ -340,7 +356,8 @@ namespace ForLifeWeb.Migrations
 
                     b.Property<string>("cpf")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("data_cadastro")
                         .HasColumnType("datetime2");
@@ -381,6 +398,10 @@ namespace ForLifeWeb.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("preco_unitario")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("produto_id")
                         .HasColumnType("int");

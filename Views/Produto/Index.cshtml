@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ForLifeWeb.Models.Produto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.descricao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.periodo_vencimento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.periodo_colheita)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.periodo_limite_colheita)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descricao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.periodo_vencimento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.periodo_colheita)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.periodo_limite_colheita)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id_produto">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id_produto">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id_produto">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

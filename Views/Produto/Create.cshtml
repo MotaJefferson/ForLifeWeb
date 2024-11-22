@@ -1,0 +1,137 @@
+﻿@model ForLifeWeb.Models.Produto
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<body class="fundo">
+
+    <main>
+        <div class="container-sm px-4 px-lg-5">
+            <h1 class="mt-5 mb-3 text-left ">
+                <span class="titulo-degrade">Cadastro de Produtos</span>
+            </h1>
+
+
+            <form>
+
+                <!-- Aqui começa a primeira linha com nome e código do produto -->
+                <div class="row">
+
+                    <!-- Campo nome do produto -->
+                    <div class="col-md-8 col-12">
+                        <div class="form-floating mb-2 ">
+                            <input type="text" class="form-control" id="nome_produto" placeholder="Produto" required
+                                   autofocus>
+                            <label for="nome_produto">Nome do Produto</label>
+                        </div>
+                    </div>
+
+                    <!-- Campo código do produto -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="text" class="form-control" id="codigo_produto" placeholder="Codigo Produto"
+                                   disabled>
+                            <label for="codigo_produto">Código</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--Aqui começa a seunda linha com somente a Descrição -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="descricao_produto"
+                                   placeholder="descricao_produto">
+                            <label for="descricao_produto">Descrição</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabeçalho Insumo -->
+                <div class="row">
+                    <h5 class="text-left text-success  ">Insumo</h5>
+                </div>
+
+                <!-- Linha com Código Insumo -->
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="codigo_insumo_produto"
+                                   placeholder="Código Insumo" required>
+                            <label for="codigo_insumo_produto">Código Insumo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabeçalho Períodos de Colheita -->
+                <div class="row">
+                    <h5 class=" text-left text-success ">Períodos de Colheita</h5>
+                </div>
+
+                <!-- Linha com Períodos -->
+                <div class="row">
+
+                    <!-- Campo dias p/ colheita -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="number" class="form-control" id="periodo_colheita_produto"
+                                   placeholder="Período para colheita" required>
+                            <label for="periodo_colheita_produto">Dias p/ Colheita</label>
+                        </div>
+                    </div>
+
+                    <!-- Campo dias p/ vencimento -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="number" class="form-control" id="periodo_vencimento_produto"
+                                   placeholder="Período Vencimento" required>
+                            <label for="periodo_vencimento_produto">Dias p/ Vencimento</label>
+                        </div>
+                    </div>
+
+                    <!-- Campo bloqueado para preenchimento automático com limitie da colheita -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="number" class="form-control" id="periodo__limite_colheita_produto"
+                                   placeholder="Período Limite Colheita" disabled>
+                            <label for="periodo__limite_colheita_produto">Limite</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Salvar -->
+                <div class="row pt-1 justify-content-left">
+                    <div class="col-md-3 col-8">
+                        <button type="submit" class="btn btn-success mt-3 w-100">Salvar</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous">
+        </script>
+
+        <script>
+            function confirmLogout(event) {
+                // Previne o comportamento padrão do link
+                event.preventDefault();
+
+                // Exibe a mensagem de confirmação
+                const userConfirmed = confirm("Tem certeza que deseja sair?");
+
+                // Se o usuário confirmar, redireciona para a página de logout
+                if (userConfirmed) {
+                    window.location.href = "/logout"; // Altere "/logout" para a rota desejada
+                }
+            }
+        </script>
+
+    </main>
+
+</body>

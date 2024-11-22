@@ -1,6 +1,10 @@
 ﻿using ForLifeWeb.Data;
 using ForLifeWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ForLifeWeb.Controllers
 {
@@ -19,27 +23,44 @@ namespace ForLifeWeb.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Validar(string codUsuario, string senha)
+        public async Task<IActionResult> Login(Usuario usuario)
         {
-            // Busca o usuário pelo código
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.cod_usuario == codUsuario);
-
-            if (usuario == null)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Usuário não encontrado.");
-                return View("Index");
+                return View();
             }
 
-            if (usuario.senha != senha)
+            var find = Usuario.ValidarLogin(usuario.cod_usuario, usuario.senha);
+
+            if (find)
             {
-                ModelState.AddModelError("", "Senha incorreta.");
-                return View("Index");
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, usuario.cod_usuario)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+                if (Url.IsLocalUrl(url: "/teste"))
+                {
+                    return Redirect(url: "/teste");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Login invalido");
             }
 
-            // Login bem-sucedido
-            TempData["Mensagem"] = "Login realizado com sucesso!";
-            return RedirectToAction("Index", "Home");
+            return View();
+
         }
+        
     }
 }

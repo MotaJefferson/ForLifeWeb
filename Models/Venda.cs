@@ -32,6 +32,10 @@ namespace ForLifeWeb.Models
 
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Valor da venda deve ser maior que zero.")]
+        public decimal preco_unitario { get; set; }
+
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Valor da venda deve ser maior que zero.")]
         public decimal valor_venda { get; set; }
     }
 }

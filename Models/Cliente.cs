@@ -16,7 +16,8 @@ namespace ForLifeWeb.Models
         public string telefone { get; set; }
 
         [Required]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
+        [StringLength(15)]
+        //[RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
         public string cpf { get; set; }
 
         [StringLength(500)]

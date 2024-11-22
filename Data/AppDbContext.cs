@@ -40,6 +40,7 @@ namespace ForLifeWeb.Data
             modelBuilder.Entity<InsumoCompra>().Property(ic => ic.preco_unitario).HasPrecision(18, 4);
             modelBuilder.Entity<InsumoCompra>().Property(ic => ic.valor_compra).HasPrecision(18, 4);
             modelBuilder.Entity<Venda>().Property(v => v.valor_venda).HasPrecision(18, 4);
+            modelBuilder.Entity<Venda>().Property(v => v.preco_unitario).HasPrecision(18, 4);
 
             // Relacionamentos e DeleteBehavior
             modelBuilder.Entity<InsumoCompra>()

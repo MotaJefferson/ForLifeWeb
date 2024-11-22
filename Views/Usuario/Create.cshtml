@@ -1,0 +1,142 @@
+﻿@model ForLifeWeb.Models.Usuario
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<body class="fundo">
+
+
+    <main>
+        <div class="container">
+
+            <!--Título Cadastro de usuário-->
+            <h1 class="mt-5 mb-5"><span class="titulo-degrade">Cadastro de Usuário</span></h1>
+
+
+            <div class="d-flex justify-content-center align-items-center">
+                <form class="w-100">
+
+                    <!--Campo nome completo-->
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" id="nomeCompleto_usuario" placeholder="Nome completo"
+                            required autofocus>
+                        <label for="nomeCompleto_usuario">Nome completo</label>
+                    </div>
+
+                    <!--Campo CPF-->
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" id="cpf_usuario" placeholder="000.000.000-00"
+                            oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)" required>
+                        <label for="cpf_usuario">CPF</label>
+                        <small id="cpfFeedback" class="text-danger"></small>
+                    </div>
+
+                    <!--Campo suspenso para selecionar o cargo-->
+                    <div class="form-floating mb-2">
+                        <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+                        <select class="form-select" id="tipoDeUsuario">
+                            <option selected>Selecione o cargo</option>
+                            <option value="1">Gestor</option>
+                            <option value="2">Agricultor</option>
+                            <option value="3">Comercial</option>
+                        </select>
+                    </div>
+
+                    <!--Campo definir o usuário-->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control" id="nomeUsuario_usuario"
+                                    placeholder="Usuario para Login" required>
+                                <label for="nomeUsuario_usuario">Usuário</label>
+                            </div>
+                        </div>
+
+                        <!--Campo para definir senha-->
+                        <div class="col">
+                            <div class="form-floating mb-2">
+                                <input type="password" class="form-control" id="senha_usuario" placeholder="Senha"
+                                    oninput="validarSenha(this)" required>
+                                <label for="senha_usuario">Senha</label>
+                                <small id="senhaFeedback" class="text-danger"></small> <!-- Mensagem de validação -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botão para envio do formulario -->
+                    <div class="row pt-3 justify-content-right">
+                        <div class="col-md-3 col-8">
+                            <button type="submit" class="btn btn-success mt-3 w-100"
+                                id="btnSalvarCadUsuario">Salvar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script> //Máscara para o CPF
+        function aplicarMascaraCPF(input) {
+            let valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+            if (valor.length > 11) valor = valor.slice(0, 11); // Limita a 11 dígitos
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
+            valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+            input.value = valor; // Atualiza o valor no campo
+        }
+
+        //validação do CPF
+        function validarCPF(input) {
+            const feedback = document.getElementById("cpfFeedback");
+            const valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+            if (valor.length < 11) {
+                feedback.textContent = "O CPF deve conter 11 dígitos.";
+                feedback.className = "text-danger"; // Texto vermelho
+            } else if (/^(\d)\1+$/.test(valor)) { // Verifica se todos os números são iguais
+                feedback.textContent = "O CPF não pode conter todos os números iguais.";
+                feedback.className = "text-danger";
+            } else {
+                feedback.textContent = "CPF válido.";
+                feedback.className = "text-success"; // Texto verde
+            }
+        }
+
+
+        //Validação de segurança da senha
+        function validarSenha(input) {
+            const feedback = document.getElementById("senhaFeedback");
+            const senha = input.value;
+
+            // Exemplo de requisitos
+            const comprimentoMinimo = 6; // Mínimo de 6 caracteres
+            const contemNumero = /\d/; // Contém pelo menos um número
+            const contemLetraMaiuscula = /[A-Z]/; // Contém pelo menos uma letra maiúscula
+            const contemCaractereEspecial = /[@@$!%*?&#]/; // Pelo menos um caractere especial
+
+            // Validação dinâmica
+            if (senha.length < comprimentoMinimo) {
+                feedback.textContent = "A senha deve ter pelo menos 6 caracteres.";
+                feedback.className = "text-danger"; // Texto vermelho
+            } else if (!contemNumero.test(senha)) {
+                feedback.textContent = "A senha deve conter pelo menos um número.";
+                feedback.className = "text-danger";
+            } else if (!contemLetraMaiuscula.test(senha)) {
+                feedback.textContent = "A senha deve conter pelo menos uma letra maiúscula.";
+                feedback.className = "text-danger";
+            } else if (!contemCaractereEspecial.test(senha)) {
+                feedback.textContent = "A senha deve conter pelo menos um caractere especial.";
+                feedback.className = "text-danger";
+            } else {
+                feedback.textContent = "Senha válida.";
+                feedback.className = "text-success"; // Texto verde
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
