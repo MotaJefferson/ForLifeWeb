@@ -5,19 +5,27 @@
 }
 
 <body class="fundo">
-
-
-
+    
     <main>
         <div class="container">
-            <h1 class="mt-5 mb-5"><span class="titulo-degrade">Cadastro de Fornecedor</span></h1>
+            <h1 class="mt-5 mb-5"><span class="titulo_inicio">Cadastro</span><span class="titulo_meio"> de
+                    forn</span><span class="titulo_fim">ecedor</span></h1>
 
 
             <div class="d-flex justify-content-center align-items-center">
                 <form class="w-100">
 
+                    <!--Seleção de cadastro ativo ou inativo-->
+
+                <input type="radio" class="btn-check " name="options-base" id="radio-fornecedor-ativo" autocomplete="off" checked>
+                    <label class="btn" for="radio-fornecedor-ativo">Ativo</label>
+
+                <input type="radio" class="btn-check" name="options-base" id="radio-fornecedor-inativo" autocomplete="off">
+                    <label class="btn" for="radio-fornecedor-inativo">Inativo</label>
+
+
                     <!-- Seletor de CPF ou CNPJ -->
-                    <div class="form-floating mb-2">
+                    <div class="form-floating mb-2 mt-3">
                         <select class="form-select" id="tipoPessoa_fornecedor" onchange="toggleFields()" autofocus>
                             <option selected>Selecione o tipo de pessoa</option>
                             <option value="cpf">Pessoa Física (CPF)</option>
@@ -69,12 +77,14 @@
                             <button type="submit" class="btn btn-success mt-3 w-100"
                                 id="btnSalvarCadFornecedor">Salvar</button>
                         </div>
+
+                    <!--Botão listar todos - deve dirercionar para listagem_fornecedor-->
+                        <div class="col-md-3 col-8">
+                            <button type="submit" href="listagem_fornecedor.html"  id="btn-listartodos-fornecedor" class="btn btn-success mt-3 w-100">Listar todos</button>
+                        </div>
                     </div>
                 </form>
             </div>
- 
-        </div>
-
         </div>
     </main>
 
@@ -158,4 +168,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+        <script>
+            function confirmLogout(event) {
+                // Previne o comportamento padrão do link
+                event.preventDefault();
+
+                // Exibe a mensagem de confirmação
+                const userConfirmed = confirm("Tem certeza que deseja sair?");
+
+                // Se o usuário confirmar, redireciona para a página de logout
+                if (userConfirmed) {
+                    window.location.href = "login.html"; // Altere "/logout" para a rota desejada
+                }
+            }
+        </script>
+
 </body>

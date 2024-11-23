@@ -12,7 +12,7 @@ namespace ForLifeWeb.Models
         public string nome { get; set; }
 
         [StringLength(500)]
-        public string descricao { get; set; }
+        public string? descricao { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -22,6 +22,6 @@ namespace ForLifeWeb.Models
         public bool ativo { get; set; }
 
         [Range(1, 365, ErrorMessage = "Período de vencimento deve ser entre 1 e 365 dias.")]
-        public int periodo_vencimento { get; set; }
+        public int? periodo_vencimento { get; set; }
     }
 }

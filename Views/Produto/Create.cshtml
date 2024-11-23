@@ -10,14 +10,24 @@
     <main>
         <div class="container-sm px-4 px-lg-5">
             <h1 class="mt-5 mb-3 text-left ">
-                <span class="titulo-degrade">Cadastro de Produtos</span>
+                <span class="titulo_inicio">Cadastro</span>
+                <span class="titulo_meio"> de Prod</span><span class="titulo_fim">utos</span>
             </h1>
 
 
             <form>
 
+                <!--Seleção de cadastro ativo ou inativo-->
+
+                <input type="radio" class="btn-check" name="options-base" id="radio-produto-ativo" autocomplete="off" checked>
+                <label class="btn" for="radio-produto-ativo">Ativo</label>
+
+                <input type="radio" class="btn-check" name="options-base" id="radio-produto-inativo" autocomplete="off">
+                <label class="btn" for="radio-produto-inativo">Inativo</label>
+
+
                 <!-- Aqui começa a primeira linha com nome e código do produto -->
-                <div class="row">
+                <div class="row pt-3">
 
                     <!-- Campo nome do produto -->
                     <div class="col-md-8 col-12">
@@ -105,7 +115,7 @@
                 <!-- Botão Salvar -->
                 <div class="row pt-1 justify-content-left">
                     <div class="col-md-3 col-8">
-                        <button type="submit" class="btn btn-success mt-3 w-100">Salvar</button>
+                        <button type="submit" id="btn-salvar-cadProduto" class="btn btn-success mt-3 w-100">Salvar</button>
                     </div>
                 </div>
 
@@ -127,7 +137,7 @@
 
                 // Se o usuário confirmar, redireciona para a página de logout
                 if (userConfirmed) {
-                    window.location.href = "/logout"; // Altere "/logout" para a rota desejada
+                    window.location.href = "login.html"; // Altere "/logout" para a rota desejada
                 }
             }
         </script>

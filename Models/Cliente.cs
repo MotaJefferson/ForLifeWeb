@@ -11,9 +11,8 @@ namespace ForLifeWeb.Models
         [StringLength(100)]
         public string nome { get; set; }
 
-        [Required]
         [StringLength(15)]
-        public string telefone { get; set; }
+        public string? telefone { get; set; }
 
         [Required]
         [StringLength(15)]
@@ -21,6 +20,9 @@ namespace ForLifeWeb.Models
         public string cpf { get; set; }
 
         [StringLength(500)]
-        public string endereco { get; set; }
+        public string? endereco { get; set; }
+
+        [Required]
+        public bool ativo { get; set; }
     }
 }

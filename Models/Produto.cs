@@ -23,7 +23,11 @@ namespace ForLifeWeb.Models
         [Range(1, 365, ErrorMessage = "Período de colheita deve ser entre 1 e 365 dias.")]
         public int periodo_colheita { get; set; }
 
-        [Range(1, 365, ErrorMessage = "Período limite de colheita deve ser entre 1 e 365 dias.")]
-        public int periodo_limite_colheita { get; set; }
+        [Range(1, 365, ErrorMessage = "Período de colheita deve ser entre 1 e 365 dias.")]
+        public int? periodo_limite_colheita { get; set; }
+
+        [Required]
+        public bool ativo { get; set; }
+
     }
 }

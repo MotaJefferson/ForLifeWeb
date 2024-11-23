@@ -4,56 +4,175 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<!DOCTYPE html>
+<html lang="pt-br">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.tipo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ativo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.periodo_vencimento)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tipo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ativo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.periodo_vencimento)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id_insumo">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id_insumo">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id_insumo">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./imagens/logo_forlife.png" type="image/x-icon">
+    <title>Estoque Insumo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="estilo.css?v=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+            /* Ajustes para container e tabela */
+        .container-tabela {
+            max-width: 100%;
+            /* Define o limite de largura do container */
+            overflow-x: auto;
+            /* Permite rolagem horizontal se necessário */
+        }
+
+        #tabela-estoque {
+            width: 100%;
+            /* Faz a tabela ocupar toda a largura do container */
+        }
+    </style>
+</head>
+
+<body class="fundo">
+
+    <main>
+        <div class="container-sm px-4 px-lg-5">
+            <h1 class="mt-5 mb-3 text-left ">
+                <span class="titulo_inicio">Estoque</span> <span class="titulo_meio">de Insumos</span>
+            </h1>
+
+            <!-- Formulário de Pesquisa -->
+            <div class="input-group mb-4">
+                <input type="text" class="form-control" placeholder="Pesquisar Insumos" id="inp-pesquisa-estoqueInsumo"
+                       aria-label="Pesquisar Insumos">
+                <button class="btn btn-success" type="button" id="btn-pesquisa-estoqueInsumo">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+
+            <!-- Botões principais com tooltips -->
+            <div class="row justify-content-center align-items-center text-center verdeclaro_backgroundcontainer mx-1">
+
+                <!-- Botão Cadastrar insumo -->
+                <div class="col-auto pt-2">
+                    <a href="cadastro_insumo.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                       data-bs-toggle="tooltip" title="Cadastrar novo insumo">
+                        <i class="bi bi-plus-lg"></i>
+                        <i class="bi bi-pencil-fill px-2"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Descartar -->
+                <div class="col-auto pt-2">
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
+                       title="Descartar insumo" id="anc-descartar-estoqueInsumo">
+                        <i class="bi bi-trash3-fill px-4"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Atualizar estoque -->
+                <div class="col-auto pt-2">
+                    <a href="estoque_insumo.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                       data-bs-toggle="tooltip" title="Atualizar estoque" id="anc-atualizar-estoqueInsumo">
+                        <i class="bi bi-arrow-repeat px-4"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Relatório -->
+                <div class="col-auto pt-2">
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
+                       title="Visualizar relatório insumo" id="anc-relatorio-estoqueInsumo">
+                        <i class="bi bi-clipboard2-check-fill px-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tabela do estoque -->
+            <div class="table-responsive mx-1">
+                <table class="table table-hover table-bordered text-center" id="tabela-estoque-insumo">
+                    <thead class="table-success">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Insumo</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Data de Vencimento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas serão preenchidas via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
+    <script>
+        function confirmLogout(event) {
+            // Previne o comportamento padrão do link
+            event.preventDefault();
+
+            // Exibe a mensagem de confirmação
+            const userConfirmed = confirm("Tem certeza que deseja sair?");
+
+            // Se o usuário confirmar, redireciona para a página de logout
+            if (userConfirmed) {
+                window.location.href = "login.html"; // Altere "/logout" para a rota desejada
+            }
+        }
+    </script>
+
+    <script>
+
+
+        // Inicializar tooltips
+        document.addEventListener("DOMContentLoaded", () => {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        });
+
+        // Dados simulados com ID para cada produto
+        const dadosSimulados = [
+            { id: 1, Insumo: "Semente de morango", quantidade: 150, dataVencimento: "2025-07-09" },
+            { id: 2, Insumo: "Adubo", quantidade: 730, dataVencimento: "2025-02-05" },
+            { id: 3, Insumo: "Muda de alface", quantidade: 28, dataVencimento: "2024-12-10" },
+            { id: 4, Insumo: "Semente de pepino", quantidade: 87, dataVencimento: "2025-12-15" }
+        ];
+
+        function dataVencimentoExpirada(dataVencimento) {
+            const dataAtual = new Date();
+            const [ano, mes, dia] = dataVencimento.split("-");
+            const dataValidade = new Date(ano, mes - 1, dia);
+            return dataValidade < dataAtual;
+        }
+
+        function carregarDadosEstoque(dados) {
+            const tabela = document.querySelector("#tabela-estoque-insumo tbody");
+            tabela.innerHTML = "";
+            dados.forEach(item => {
+                const dataVencimentoFormatada = formatarData(item.dataVencimento);
+                const vencido = dataVencimentoExpirada(item.dataVencimento);
+                const novaLinha = document.createElement("tr");
+                if (vencido) novaLinha.classList.add("vencido");
+                novaLinha.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.Insumo}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${dataVencimentoFormatada}</td>
+                `;
+                tabela.appendChild(novaLinha);
+            });
+        }
+
+        function formatarData(data) {
+            const [ano, mes, dia] = data.split("-");
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        carregarDadosEstoque(dadosSimulados);
+    </script>
+</body>
+
+</html>

@@ -4,6 +4,7 @@ using ForLifeWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ForLifeWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241123184641_AjusteCamposNull")]
+    partial class AjusteCamposNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,9 +32,6 @@ namespace ForLifeWeb.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_cliente"));
-
-                    b.Property<bool>("ativo")
-                        .HasColumnType("bit");
 
                     b.Property<string>("cpf")
                         .IsRequired()
@@ -257,9 +257,6 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_produto"));
 
-                    b.Property<bool>("ativo")
-                        .HasColumnType("bit");
-
                     b.Property<string>("descricao")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -339,9 +336,6 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_usuario"));
 
-                    b.Property<bool>("ativo")
-                        .HasColumnType("bit");
-
                     b.Property<string>("cargo")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -392,11 +386,8 @@ namespace ForLifeWeb.Migrations
                     b.Property<DateTime>("data_venda")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("forma_pagamento")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<string>("numero_venda")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 

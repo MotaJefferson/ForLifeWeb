@@ -4,62 +4,111 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<body class="fundo">
+    <main>
+        <div class="container-sm px-4 px-lg-5">
+            <h1 class="mt-5 mb-3 text-left ">
+                <span class="titulo_inicio">Lista</span> <span class="titulo_meio">de </span><span
+                    class=" titulo_fim">usuários</span>
+            </h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cargo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cpf)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cod_usuario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.senha)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.data_cadastro)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cargo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cpf)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cod_usuario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.senha)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.data_cadastro)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id_usuario">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id_usuario">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id_usuario">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <!-- Formulário de Pesquisa -->
+            <div class="input-group mb-4">
+                <input type="text" class="form-control" placeholder="Pesquisar usuário" id="inp-pesquisa-usuario"
+                    aria-label="Pesquisar usuario">
+                <button class="btn btn-success" type="button" id="btn-pesquisa-usuario">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+
+            <!-- Botões principais com tooltips -->
+            <div class="row justify-content-center align-items-center text-center verdeclaro_backgroundcontainer mx-1">
+
+                <!-- Botão editar cadastro-->
+                <div class="col-auto pt-2">
+                    <a href="cadastro_usuario.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                        data-bs-toggle="tooltip" title="Editar cadastro usuario">
+                        <i class="bi bi-pencil-fill px-4"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Descartar -->
+                <div class="col-auto pt-2">
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
+                        title="Descartar cadastro usuario" id="anc-descartar-usuario">
+                        <i class="bi bi-trash3-fill px-4"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Atualizar lista -->
+                <div class="col-auto pt-2">
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
+                        title="Atualizar lista de usuarios" id="anc-atualizar-usuario">
+                        <i class="bi bi-arrow-repeat px-4"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Relatório -->
+                <div class="col-auto pt-2">
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
+                        title="Visualizar relatório usuario" id="anc-relatorio-usuario">
+                        <i class="bi bi-clipboard2-check-fill px-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tabela de usuarios -->
+            <div class="table-responsive mx-1">
+                <table class="table table-hover table-bordered text-center" id="tabela-usuario">
+                    <thead class="table-success">
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">CPF</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Cargo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas serão preenchidas via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
+    <script>
+        function processarSelecao() {
+            var selecionados = [];
+
+            // Captura os checkboxes selecionados
+            document.querySelectorAll('.checkbox-select:checked').forEach(function (checkbox) {
+                var cpf = checkbox.value; // Ou qualquer outro dado para identificar o item
+                selecionados.push(cpf);
+            });
+
+            if (selecionados.length > 0) {
+
+                var confirmacao = confirm('Deseja deletar os usuário(s): ' + selecionados.join(', ') + '. Deseja confirmar?')
+
+                if (confirmacao) {
+                    for (const id of selecionados) {
+                        try {
+                            alert(`Erro ao comunicar com o servidor para o item ${id}.`);
+                        } catch (error) {
+                            alert(`Erro ao comunicar com o servidor para o item ${id}.`);
+                        }
+                    }
+                    location.reload();
+                }
+
+            } else {
+                alert('Nenhuma linha selecionada.');
+            }
+        }
+    </script>
+
+</body>

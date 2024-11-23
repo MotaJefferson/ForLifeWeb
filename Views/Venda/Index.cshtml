@@ -1,0 +1,148 @@
+﻿@model IEnumerable<ForLifeWeb.Models.Venda>
+
+@{
+    ViewData["Title"] = "Venda";
+}
+
+<body class="fundo">
+
+    <main>
+        <div class="container-sm px-4 px-lg-5">
+            <h1 class="mt-5 mb-3 text-left ">
+                <span class="titulo_inicio">Ve</span><span class="titulo_meio">nd</span><span class="titulo_fim">as</span>
+            </h1>
+
+            <div class="row pt-4">
+                <h5 class="text-left text-success">Informações de Venda</h5>
+            </div>
+
+
+            <form>
+                <div class="row">
+
+                    <div class="col-md-8 col-12">
+
+                        <!--Barra de pesquisa e botão para pesquisar o cliente, a barra precisa buscar os clientes cadastrados no banco de dados-->
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control" placeholder="Pesquisar Cliente" autofocus
+                                   id="pesquisa-cliente" aria-label="Pesquisar Cliente">
+                            <button class="btn btn-success" type="button" id="btn-pesquisa-cliente">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--Barra de pesquisa e botão para pesquisar o produto a ser vendido, a barra precisa buscar os produtos cadastrados no banco de dados-->
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control" placeholder="Pesquisar Produtos"
+                                   id="pesquisa-produtos-venda" aria-label="Pesquisar Produtos" required>
+                            <button class="btn btn-success" type="button" id="btn-pesquisar-produto">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!--Campo input para informar quantidade de venda-->
+                    <div class="col-md-2 col-12">
+                        <div class="input-group mb-4">
+                            <input type="number" class="form-control" id="quantidade_venda" placeholder="Quantidade" oninput="calcular()"
+                                   required>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-12">
+
+                        <!--Campo input para informar valor unitario da venda e função para calcular este valor-->
+                        <div class="input-group mb-4">
+                            <input type="number" class="form-control" id="valor_unitario_venda"
+                                   placeholder="R$ Valor Unit." oninput="calcular()" required>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-12">
+
+                        <!--Campo valor total da venda, já calcula automático mas é possível alterar manualmente-->
+                        <div class="input-group mb-4">
+                            <input type="number" class="form-control" id="valor_total_venda" placeholder="R$ Valor Tot." readonly
+                                   required>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Cabeçalho forma de pagamento -->
+                <div class="row">
+                    <h5 class=" text-left text-success ">Forma de Pagamento</h5>
+                </div>
+
+                <!--Radio butons para opções de formas de pagamento: Cartão, Dinheiro, Pix-->
+                <div class="row pt-2">
+                    <div class="col-md-1 col-12 ">
+                        <input type="radio" class="btn-check " name="botao pagamento" id="btn_forma_pagamento_cartao" autocomplete="off"
+                               checked>
+                        <label class="btn" for="btn_forma_pagamento_cartao">Cartão</label>
+                    </div>
+                    <div class="col-md-1 col-12">
+                        <input type="radio" class="btn-check" name="botao pagamento" id="btn_forma_pagamento_dinheiro" autocomplete="off">
+                        <label class="btn" for="btn_forma_pagamento_dinheiro">Dinheiro</label>
+                    </div>
+                    <div class="col-md-1 col-12 pb-4">
+                        <input type="radio" class="btn-check" name="botao pagamento" id="btn_forma_pagamento_pix" autocomplete="off">
+                        <label class="btn" for="btn_forma_pagamento_pix">Pix</label>
+                    </div>
+                </div>
+
+                <!-- Botão Salvar -->
+                <div class="row pt-1 justify-content-left">
+                    <div class="col-md-3 col-8">
+                        <button type="submit" class="btn btn-success mt-3 w-100" id="salvar-venda">Salvar</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
+
+        <script>
+            function confirmLogout(event) {
+                // Previne o comportamento padrão do link
+                event.preventDefault();
+
+                // Exibe a mensagem de confirmação
+                const userConfirmed = confirm("Tem certeza que deseja sair?");
+
+                // Se o usuário confirmar, redireciona para a página de logout
+                if (userConfirmed) {
+                    window.location.href = "login.html"; // Altere "/logout" para a rota desejada
+                }
+            }
+        </script>
+
+        <script>
+            function calcular() {
+                // Obtém os valores dos inputs
+                const valor1 = parseFloat(document.getElementById("quantidade_venda").value) || 0;
+                const valor2 = parseFloat(document.getElementById("valor_unitario_venda").value) || 0;
+
+                // Realiza o cálculo
+                const resultado = valor1 * valor2;
+
+                // Exibe o resultado no campo de saída
+                document.getElementById("valor_total_venda").value = resultado;
+            }
+        </script>
+
+    </main>
+
+</body>

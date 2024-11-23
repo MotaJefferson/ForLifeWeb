@@ -14,13 +14,11 @@ namespace ForLifeWeb.Models
         [Required]
         public int cliente_id { get; set; }
 
-        [Required]
         [StringLength(50)]
-        public string numero_venda { get; set; }
+        public string? numero_venda { get; set; }
 
         [DataType(DataType.Date)]
-        [Required]
-        public DateTime data_registro { get; set; }
+        public DateTime? data_registro { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quantidade deve ser maior que zero.")]
@@ -37,5 +35,9 @@ namespace ForLifeWeb.Models
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Valor da venda deve ser maior que zero.")]
         public decimal valor_venda { get; set; }
+
+        [StringLength(10)]
+        public string? forma_pagamento { get; set; }
+
     }
 }

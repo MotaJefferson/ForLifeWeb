@@ -1,119 +1,125 @@
 ﻿@model ForLifeWeb.Models.Cliente
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Cadastro";
 }
 
 <!DOCTYPE html>
 <html lang="pt-br">
 
-<head>
-    
-    <title>Cadastro Cliente</title>
-
-</head>
-
 <body class="fundo">
 
-    <main>
+  <main>
         <div class="container">
-            <h1 class="mt-5 mb-5">
-                <span class="titulo-degrade">Cadastro de Cliente</span>
-            </h1>
+            <h1 class="mt-5 mb-5"><span class="titulo_inicio">Cadastro</span><span class="titulo_meio"> de
+                    cli</span><span class="titulo_fim">ente</span></h1>
 
 
             <div class="d-flex justify-content-center align-items-center">
-                <form asp-action="Create" class="w-100">
+                <form class="w-100">
 
-                    <!-- Resumo de Validação -->
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <!--Seleção de cadastro ativo ou inativo-->
+
+                    <input type="radio" class="btn-check " name="options-base" id="radio-cliente-ativo" autocomplete="off" checked>
+                    <label class="btn" for="radio-cliente-ativo">Ativo</label>
+
+                    <input type="radio" class="btn-check" name="options-base" id="radio-cliente-inativo" autocomplete="off">
+                    <label class="btn" for="radio-cliente-inativo">Inativo</label>
 
                     <!-- Campo CPF -->
-                    <div class="form-floating mb-2" id="cpfField">
-                        <input asp-for="cpf" class="form-control" id="cpf_cliente" placeholder="000.000.000-00"
-                               oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)" autofocus>
-                        <label asp-for="cpf">CPF</label>
-                        <span asp-validation-for="cpf" class="text-danger"></span>
+                    <div class="form-floating mb-2 mt-3" id="cpfField">
+                        <input type="text" class="form-control" id="cpf_cliente" placeholder="000.000.000-00"
+                            oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)" autofocus>
+                        <label for="cpf_usuario">CPF</label>
+                        <small id="cpfFeedback" class="text-danger"></small>
                     </div>
 
 
                     <!--Campo Nome-->
                     <div class="form-floating mb-2">
-                        <input asp-for="nome" class="form-control" id="nome_cliente" placeholder="Nome do cliente"
-                               required>
-                        <label asp-for="nome">Nome do cliente</label>
-                        <span asp-validation-for="nome" class="text-danger"></span>
+                        <input type="text" class="form-control" id="nome_cliente" placeholder="Nome do cliente"
+                            required>
+                        <label for="nome_cliente">Nome do cliente</label>
                     </div>
 
                     <!-- Campo Telefone -->
                     <div class="form-floating mb-2">
-                        <input asp-for="telefone" class="form-control" id="telefone_cliente"
-                               placeholder="Telefone do cliente" required>
-                        <label asp-for="telefone">Telefone</label>
-                        <span asp-validation-for="telefone" class="text-danger"></span>
+                        <input type="text" class="form-control" id="telefone_cliente"
+                            placeholder="Telefone do cliente" required>
+                        <label for="telefone_cliente">Telefone</label>
                     </div>
 
-                    <!-- Campo Endereço -->
+                    <!-- Campo Observação -->
                     <div class="form-floating mb-2">
-                        <input asp-for="endereco" class="form-control" id="observacao_cliente"
-                               placeholder="Endereço do cliente">
-                        <label asp-for="endereco">Endereço</label>
-                        <span asp-validation-for="endereco" class="text-danger"></span>
+                        <input type="text" class="form-control" id="observacao_cliente"
+                            placeholder="Observações sobre o cliente">
+                        <label for="observacao_cliente">Observação</label>
                     </div>
 
                     <!-- Botão para envio do formulario -->
                     <div class="row pt-3 justify-content-right">
                         <div class="col-md-3 col-8">
                             <button type="submit" class="btn btn-success mt-3 w-100"
-                                    id="btnSalvarCadCliente">
-                                Salvar
-                            </button>
+                                id="btnSalvarCadCliente">Salvar</button>
+                        </div>
+
+                    <!--Botão listar todos os clientes, deve direcionar para listagem_cliente-->
+                        <div class="col-md-3 col-8">
+                            <button type="submit" href="listagem_cliente.html" id="btn-listartodos-cliente" class="btn btn-success mt-3 w-100">Listar todos</button>
                         </div>
                     </div>
-                </form>
-            </div>
-
-
-        </div>
-
+                </form> 
+            </div> 
         </div>
     </main>
 
+    <script> //Máscara para o CPF
+        function aplicarMascaraCPF(input) {
+            let valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+            if (valor.length > 11) valor = valor.slice(0, 11); // Limita a 11 dígitos
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
+            valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+            input.value = valor; // Atualiza o valor no campo
+        }
+
+        //validação do CPF
+        function validarCPF(input) {
+            const feedback = document.getElementById("cpfFeedback");
+            const valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+            if (valor.length < 11) {
+                feedback.textContent = "O CPF deve conter 11 dígitos.";
+                feedback.className = "text-danger"; // Texto vermelho
+            } else if (/^(\d)\1+$/.test(valor)) { // Verifica se todos os números são iguais
+                feedback.textContent = "O CPF não pode conter todos os números iguais.";
+                feedback.className = "text-danger";
+            } else {
+                feedback.textContent = "CPF válido.";
+                feedback.className = "text-success"; // Texto verde
+            }
+        }
+
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous">
-    </script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
-    <script>
-        //Máscara para o CPF
-               function aplicarMascaraCPF(input) {
-                   let valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-                   if (valor.length > 11) valor = valor.slice(0, 11); // Limita a 11 dígitos
-                   valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
-                   valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
-                   valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
-                   input.value = valor; // Atualiza o valor no campo
-               }
+        <script>
+            function confirmLogout(event) {
+                // Previne o comportamento padrão do link
+                event.preventDefault();
 
-               //validação do CPF
-               function validarCPF(input) {
-                   const feedback = document.getElementById("cpfFeedback");
-                   const valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+                // Exibe a mensagem de confirmação
+                const userConfirmed = confirm("Tem certeza que deseja sair?");
 
-                   if (valor.length < 11) {
-                       feedback.textContent = "O CPF deve conter 11 dígitos.";
-                       feedback.className = "text-danger"; // Texto vermelho
-                   } else if (/^(\d)\1+$/.test(valor)) { // Verifica se todos os números são iguais
-                       feedback.textContent = "O CPF não pode conter todos os números iguais.";
-                       feedback.className = "text-danger";
-                   } else {
-                       feedback.textContent = "CPF válido.";
-                       feedback.className = "text-success"; // Texto verde
-                   }
-               }
-
-    </script>
-
+                // Se o usuário confirmar, redireciona para a página de logout
+                if (userConfirmed) {
+                    window.location.href = "login.html"; // Altere "/logout" para a rota desejada
+                }
+            }
+        </script>
     
 </body>
 

@@ -31,7 +31,10 @@ namespace ForLifeWeb.Models
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime data_cadastro { get; set; }
+        public DateTime? data_cadastro { get; set; }
+
+        [Required]
+        public bool ativo { get; set; }
 
 
         private static string GetConnectionString()

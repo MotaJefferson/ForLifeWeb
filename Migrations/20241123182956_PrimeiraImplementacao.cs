@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ForLifeWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class PrimeiraImplementacao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -180,7 +180,7 @@ namespace ForLifeWeb.Migrations
                     data_colheita = table.Column<DateTime>(type: "datetime2", nullable: false),
                     data_vencimento_estimado = table.Column<DateTime>(type: "datetime2", nullable: false),
                     data_registro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    data_baixa = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    data_baixa = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

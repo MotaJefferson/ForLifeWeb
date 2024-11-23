@@ -4,56 +4,85 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<body class="fundo">
+    <main>
+        <div class="container-sm px-4 px-lg-5">
+            <h1 class="mt-5 mb-3 text-left ">
+                <span class="titulo_inicio">Estoque</span> <span class="titulo_meio">de Produtos</span>
+            </h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.periodo_vencimento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.periodo_colheita)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.periodo_limite_colheita)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.periodo_vencimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.periodo_colheita)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.periodo_limite_colheita)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id_produto">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id_produto">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id_produto">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <!-- Formulário de Pesquisa -->
+            <div class="input-group mb-4">
+                <input type="text" class="form-control" placeholder="Pesquisar Produtos" id="campo-pesquisa"
+                       aria-label="Pesquisar Produtos">
+                <button class="btn btn-success" type="button" id="btn-pesquisar">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+
+            <!-- Botões principais com tooltips -->
+            <div class="row justify-content-center align-items-center text-center verdeclaro_backgroundcontainer mx-1">
+
+                <!-- Botão Cadastrar produto -->
+                <div class="col-auto pt-2">
+                    <a href="cadastro_produto.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                       data-bs-toggle="tooltip" title="Cadastrar novo produto">
+                        <i class="bi bi-plus-lg"></i>
+                        <i class="bi bi-pencil-fill px-2"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Descartar -->
+                <div class="col-auto pt-2">
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
+                       title="Descartar produto">
+                        <i class="bi bi-trash3-fill px-4"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Atualizar estoque -->
+                <div class="col-auto pt-2">
+                    <a href="estoque_produto.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                       data-bs-toggle="tooltip" title="Atualizar estoque">
+                        <i class="bi bi-arrow-repeat px-4"></i>
+                    </a>
+                </div>
+
+                <!-- Botão Relatório -->
+                <div class="col-auto pt-2">
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
+                       title="Visualizar relatório">
+                        <i class="bi bi-clipboard2-check-fill px-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tabela do estoque -->
+            <div class="table-responsive mx-1">
+                <table class="table table-hover table-bordered text-center" id="tabela-estoque-produto">
+                    <thead class="table-success">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Produto</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Data da Colheita</th>
+                            <th scope="col">Data de Vencimento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+</script>

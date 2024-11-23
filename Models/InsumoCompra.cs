@@ -23,6 +23,6 @@ namespace ForLifeWeb.Models
         public int quantidade { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Valor de compra deve ser maior que zero.")]
-        public decimal valor_compra { get; set; }
+        public decimal? valor_compra { get; set; }
     }
 }

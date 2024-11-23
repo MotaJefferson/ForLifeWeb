@@ -11,24 +11,21 @@ namespace ForLifeWeb.Models
         [StringLength(100)]
         public string nome { get; set; }
 
-        [Required]
         [StringLength(15)]
         [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
-        public string cpf { get; set; }
+        public string? cpf { get; set; }
 
         [StringLength(100)]
-        public string razao_social { get; set; }
+        public string? razao_social { get; set; }
 
         [RegularExpression(@"^\d{14}$", ErrorMessage = "CNPJ inválido")]
         [StringLength(20)]
-        public string cnpj { get; set; }
+        public string? cnpj { get; set; }
 
-        [Required]
         [StringLength(15)]
-        public string telefone { get; set; }
-
+        public string? telefone { get; set; }
 
         [StringLength(500)]
-        public string endereco { get; set; }
+        public string? endereco { get; set; }
     }
 }

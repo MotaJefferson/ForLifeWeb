@@ -31,10 +31,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 px-md-5">
                         <li class="nav-item">
-                            <a class="nav-link " aria-current="page" href="#">VENDAS</a>
+                            <a class="nav-link" aria-current="page" asp-controller="Venda" asp-action="Index">VENDAS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">PLANTIO</a>
+                            <a class="nav-link" asp-controller="Plantio" asp-action="Index">PLANTIO</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
@@ -42,14 +42,26 @@
                                 ESTOQUE
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item " href="#">Produto</a></li>
-                                <li><a class="dropdown-item " href="#">Insumo</a></li>
+                                <li><a class="dropdown-item " asp-controller="Produto" asp-action="Index">Produto</a></li>
+                                <li><a class="dropdown-item " asp-controller="Insumo" asp-action="Index">Insumo</a></li>
                                 <li>
-                                    <hr class="dropdown-divider">
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                PERFIS
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a>
                                 </li>
-                                <li><a class="dropdown-item" asp-controller="Produto" asp-action="Create">Cadastro Produto</a></li>
-                                <li><a class="dropdown-item" asp-controller="Insumo" asp-action="Create">Cadastro Insumo</a></li>
-
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Fornecedor" asp-action="Index">Fornecedor</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuário</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -58,6 +70,11 @@
                                 CADASTRO
                             </a>
                             <ul class="dropdown-menu">
+
+                                <li><a class="dropdown-item " asp-controller="Produto" asp-action="Create">Produto</a></li>
+                                <li><a class="dropdown-item " asp-controller="Insumo" asp-action="Create">Insumo</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
                                 <li>
                                     <a class="dropdown-item" asp-controller="Cliente" asp-action="Create">Cliente</a>
                                 </li>
@@ -71,7 +88,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="confirmLogout(event)">SAIR</a>
+                            <a class="nav-link" href="#" onclick="confirmLogout(event)">SAIR <i class="bi bi-power"></i></a>
                         </li>
 
                     </ul>
@@ -85,5 +102,9 @@
             @RenderBody()
         </main>
     </div>
+
+    <script src="~/js/site.js"></script>
+    @RenderSection("js", required: false)
+
 </body>
 </html>

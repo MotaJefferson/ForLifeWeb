@@ -10,38 +10,22 @@ using ForLifeWeb.Models;
 
 namespace ForLifeWeb.Controllers
 {
-    public class UsuarioController : Controller
+    public class VendaController : Controller
     {
         private readonly AppDbContext _context;
 
-        public UsuarioController(AppDbContext context)
+        public VendaController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Usuario
+        // GET: Venda
         public async Task<IActionResult> Index()
         {
-            var usuarios = _context.Usuarios
-                .Select(u => new Usuario
-                {
-                    nome = u.nome,
-                    cargo = u.cargo,
-                    cpf = u.cpf,
-                    cod_usuario = u.cod_usuario,
-                    ativo = u.ativo
-                })
-                .ToList();
-
-            foreach (var usuario in usuarios)
-            {
-                usuario.cpf = FormatCpf(usuario.cpf);  
-            }
-
-            return View(usuarios);
+            return View(await _context.Vendas.ToListAsync());
         }
 
-        // GET: Usuario/Details/5
+        // GET: Venda/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,39 +33,39 @@ namespace ForLifeWeb.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.id_usuario == id);
-            if (usuario == null)
+            var venda = await _context.Vendas
+                .FirstOrDefaultAsync(m => m.id_venda == id);
+            if (venda == null)
             {
                 return NotFound();
             }
 
-            return View(usuario);
+            return View(venda);
         }
 
-        // GET: Usuario/Create
+        // GET: Venda/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Usuario/Create
+        // POST: Venda/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_usuario,nome,cargo,cpf,cod_usuario,senha,data_cadastro")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("id_venda,produto_id,cliente_id,numero_venda,data_registro,quantidade_venda,data_venda,preco_unitario,valor_venda")] Venda venda)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(usuario);
+                _context.Add(venda);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(usuario);
+            return View(venda);
         }
 
-        // GET: Usuario/Edit/5
+        // GET: Venda/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,22 +73,22 @@ namespace ForLifeWeb.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario == null)
+            var venda = await _context.Vendas.FindAsync(id);
+            if (venda == null)
             {
                 return NotFound();
             }
-            return View(usuario);
+            return View(venda);
         }
 
-        // POST: Usuario/Edit/5
+        // POST: Venda/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id_usuario,nome,cargo,cpf,cod_usuario,senha,data_cadastro")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("id_venda,produto_id,cliente_id,numero_venda,data_registro,quantidade_venda,data_venda,preco_unitario,valor_venda")] Venda venda)
         {
-            if (id != usuario.id_usuario)
+            if (id != venda.id_venda)
             {
                 return NotFound();
             }
@@ -113,12 +97,12 @@ namespace ForLifeWeb.Controllers
             {
                 try
                 {
-                    _context.Update(usuario);
+                    _context.Update(venda);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuarioExists(usuario.id_usuario))
+                    if (!VendaExists(venda.id_venda))
                     {
                         return NotFound();
                     }
@@ -129,10 +113,10 @@ namespace ForLifeWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(usuario);
+            return View(venda);
         }
 
-        // GET: Usuario/Delete/5
+        // GET: Venda/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,55 +124,34 @@ namespace ForLifeWeb.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.id_usuario == id);
-            if (usuario == null)
+            var venda = await _context.Vendas
+                .FirstOrDefaultAsync(m => m.id_venda == id);
+            if (venda == null)
             {
                 return NotFound();
             }
 
-            return View(usuario);
+            return View(venda);
         }
 
-        // POST: Usuario/Delete/5
+        // POST: Venda/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario != null)
+            var venda = await _context.Vendas.FindAsync(id);
+            if (venda != null)
             {
-                _context.Usuarios.Remove(usuario);
+                _context.Vendas.Remove(venda);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UsuarioExists(int id)
+        private bool VendaExists(int id)
         {
-            return _context.Usuarios.Any(e => e.id_usuario == id);
+            return _context.Vendas.Any(e => e.id_venda == id);
         }
-
-
-        private string FormatCpf(string cpf)
-        {
-            if (string.IsNullOrEmpty(cpf)) return cpf;
-
-            var cleanCpf = new string(cpf.Where(char.IsDigit).ToArray());
-
-            if (cleanCpf.Length == 11)
-            {
-                return string.Format("{0}.{1}.{2}-{3}",
-                    cleanCpf.Substring(0, 3),
-                    cleanCpf.Substring(3, 3),
-                    cleanCpf.Substring(6, 3),
-                    cleanCpf.Substring(9, 2));
-            }
-
-            return cpf;
-        }
-
-
     }
 }

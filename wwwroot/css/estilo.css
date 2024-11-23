@@ -12,27 +12,85 @@
     background-image: url("/assets/tela_escura.png");
 }
 
-.titulo{
-    font-size: 3.5rem;
+.titulo {
+    font-size: 3.15rem;
     font-family: "Archivo Black", sans-serif;
     text-align: center;
-    margin-top: 10%;   
+    margin-top: 10%;
 }
 
-.titulo_inicio{
+.titulo_inicio {
     color: rgb(26, 118, 54);
 }
 
-.titulo_meio{
+.titulo_meio {
     color: rgb(58, 149, 30);
 }
 
-.titulo_fim{
+.titulo_fim {
     color: rgb(125, 189, 43);
 }
 
+.verde-100 {
+    background-color: #7dbd2b; /* Código HEX para $verde-100 */
+}
+
+.verde-transparente {
+    background-color: rgba(21, 154, 54, 0.4); /* 0.5 = 50% de opacidade */
+}
+
+.subtitulo {
+    font-size: 3.15rem;
+}
+
+.texto_padrao {
+    font-family: "Archivo Black", sans-serif;
+    color: rgb(26, 118, 54);
+}
+
+.verde-transparente_titulo {
+    background-color: rgb(125, 189, 43, 0.4);
+}
+
+.vencido {
+    background-color: #f8d7da; /* Cor de fundo vermelha */
+    color: rgb(150, 3, 3) /* Cor do texto vermelha */
+}
+
+.verdeclaro_backgroundcontainer {
+    background-color: rgba(58, 149, 30, 0.4); /* 0.5 = 50% de opacidade */
+}
+
+/* Ajustes para container e tabela */
+.container-tabela {
+    max-width: 100%;
+    /* Define o limite de largura do container */
+    overflow-x: auto;
+    /* Permite rolagem horizontal se necessário */
+}
+
+#tabela-estoque {
+    width: 100%;
+    /* Faz a tabela ocupar toda a largura do container */
+}
+
 .titulo-degrade {
-    background: linear-gradient(90deg, rgb(26, 118, 54), rgb(58, 149, 30), rgb(125, 189, 43) );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: linear-gradient(to right, rgb(26, 118, 54), rgb(58, 149, 30), rgb(124, 187, 42)); /* Gradiente verde */
+    -webkit-background-clip: text; /* Recorta o gradiente no texto */
+    -webkit-text-fill-color: transparent; /* Faz o preenchimento do texto transparente */
+    display: inline-block; /* Garante que o gradiente se aplique corretamente */
+}
+
+.gradiente-texto {
+    background: linear-gradient(to right, rgb(26, 118, 54), rgb(58, 149, 30), rgb(124, 187, 42)); /* Gradiente verde */
+    -webkit-background-clip: text; /* Recorta o gradiente no texto */
+    -webkit-text-fill-color: transparent; /* Faz o preenchimento do texto transparente */
+    display: inline-block; /* Garante que o gradiente se aplique corretamente */
+}
+
+
+.btn-ajustado {
+    padding: 8px 20px; /* Ajusta o espaçamento interno: altura (vertical) e largura (horizontal) */
+    font-size: 16px; /* Ajuste opcional do tamanho da fonte */
+    line-height: 1.2; /* Controla a proporção da altura do conteúdo */
 }

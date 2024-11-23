@@ -18,18 +18,18 @@ namespace ForLifeWeb.Models
         public int quantidade_plantio { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_plantio { get; set; }
+        public DateTime? data_plantio { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_colheita { get; set; }
+        public DateTime? data_colheita { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_vencimento_estimado { get; set; }
+        public DateTime? data_vencimento_estimado { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_registro { get; set; }
+        public DateTime? data_registro { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_baixa { get; set; }
+        public DateTime? data_baixa { get; set; }
     }
 }

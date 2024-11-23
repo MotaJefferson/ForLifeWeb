@@ -1,0 +1,54 @@
+﻿@model ForLifeWeb.Models.Plantio
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Plantio</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.quantidade_plantio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.quantidade_plantio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.data_plantio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.data_plantio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.data_colheita)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.data_colheita)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.data_vencimento_estimado)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.data_vencimento_estimado)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.data_registro)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.data_registro)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.data_baixa)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.data_baixa)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id_plantio">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

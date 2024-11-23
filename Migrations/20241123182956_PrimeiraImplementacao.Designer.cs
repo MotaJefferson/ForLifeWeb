@@ -4,6 +4,7 @@ using ForLifeWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ForLifeWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241123182956_PrimeiraImplementacao")]
+    partial class PrimeiraImplementacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,15 +33,13 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_cliente"));
 
-                    b.Property<bool>("ativo")
-                        .HasColumnType("bit");
-
                     b.Property<string>("cpf")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("endereco")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -48,6 +49,7 @@ namespace ForLifeWeb.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("telefone")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -65,14 +67,17 @@ namespace ForLifeWeb.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_fornecedor"));
 
                     b.Property<string>("cnpj")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("cpf")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("endereco")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -82,10 +87,12 @@ namespace ForLifeWeb.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("razao_social")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("telefone")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -106,6 +113,7 @@ namespace ForLifeWeb.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("descricao")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -114,7 +122,7 @@ namespace ForLifeWeb.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("periodo_vencimento")
+                    b.Property<int>("periodo_vencimento")
                         .HasColumnType("int");
 
                     b.Property<string>("tipo")
@@ -148,7 +156,7 @@ namespace ForLifeWeb.Migrations
                     b.Property<int>("quantidade")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("valor_compra")
+                    b.Property<decimal>("valor_compra")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
@@ -169,19 +177,19 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_estoque"));
 
-                    b.Property<DateTime?>("data_baixa")
+                    b.Property<DateTime>("data_baixa")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_entrada")
+                    b.Property<DateTime>("data_entrada")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_registro")
+                    b.Property<DateTime>("data_registro")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_saida")
+                    b.Property<DateTime>("data_saida")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_vencimento_estimado")
+                    b.Property<DateTime>("data_vencimento_estimado")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("fornecedor_id")
@@ -190,13 +198,13 @@ namespace ForLifeWeb.Migrations
                     b.Property<int>("insumo_id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("quantidade_atual")
+                    b.Property<int>("quantidade_atual")
                         .HasColumnType("int");
 
-                    b.Property<int?>("quantidade_entrada")
+                    b.Property<int>("quantidade_entrada")
                         .HasColumnType("int");
 
-                    b.Property<int?>("quantidade_saida")
+                    b.Property<int>("quantidade_saida")
                         .HasColumnType("int");
 
                     b.HasKey("id_estoque");
@@ -219,16 +227,16 @@ namespace ForLifeWeb.Migrations
                     b.Property<DateTime?>("data_baixa")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_colheita")
+                    b.Property<DateTime>("data_colheita")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_plantio")
+                    b.Property<DateTime>("data_plantio")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_registro")
+                    b.Property<DateTime>("data_registro")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_vencimento_estimado")
+                    b.Property<DateTime>("data_vencimento_estimado")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("insumo_id")
@@ -257,9 +265,6 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_produto"));
 
-                    b.Property<bool>("ativo")
-                        .HasColumnType("bit");
-
                     b.Property<string>("descricao")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -276,7 +281,7 @@ namespace ForLifeWeb.Migrations
                     b.Property<int>("periodo_colheita")
                         .HasColumnType("int");
 
-                    b.Property<int?>("periodo_limite_colheita")
+                    b.Property<int>("periodo_limite_colheita")
                         .HasColumnType("int");
 
                     b.Property<int>("periodo_vencimento")
@@ -297,19 +302,19 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_estoque"));
 
-                    b.Property<DateTime?>("data_baixa")
+                    b.Property<DateTime>("data_baixa")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_colheita")
+                    b.Property<DateTime>("data_colheita")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_registro")
+                    b.Property<DateTime>("data_registro")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_saida")
+                    b.Property<DateTime>("data_saida")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_vencimento_estimado")
+                    b.Property<DateTime>("data_vencimento_estimado")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("produto_id")
@@ -318,10 +323,10 @@ namespace ForLifeWeb.Migrations
                     b.Property<int>("quantidade_atual")
                         .HasColumnType("int");
 
-                    b.Property<int?>("quantidade_colheita")
+                    b.Property<int>("quantidade_colheita")
                         .HasColumnType("int");
 
-                    b.Property<int?>("quantidade_saida")
+                    b.Property<int>("quantidade_saida")
                         .HasColumnType("int");
 
                     b.HasKey("id_estoque");
@@ -338,9 +343,6 @@ namespace ForLifeWeb.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_usuario"));
-
-                    b.Property<bool>("ativo")
-                        .HasColumnType("bit");
 
                     b.Property<string>("cargo")
                         .IsRequired()
@@ -386,17 +388,14 @@ namespace ForLifeWeb.Migrations
                     b.Property<int>("cliente_id")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("data_registro")
+                    b.Property<DateTime>("data_registro")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("data_venda")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("forma_pagamento")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<string>("numero_venda")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 

@@ -14,27 +14,27 @@ namespace ForLifeWeb.Models
         public int insumo_id { get; set; }
 
         [Range(0, int.MaxValue)]
-        public int quantidade_atual { get; set; }
+        public int? quantidade_atual { get; set; }
 
         [Range(0, int.MaxValue)]
-        public int quantidade_entrada { get; set; }
+        public int? quantidade_entrada { get; set; }
 
         [Range(0, int.MaxValue)]
-        public int quantidade_saida { get; set; }
+        public int? quantidade_saida { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_entrada { get; set; }
+        public DateTime? data_entrada { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_saida { get; set; }
+        public DateTime? data_saida { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_baixa { get; set; }
+        public DateTime? data_baixa { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_registro { get; set; }
+        public DateTime? data_registro { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime data_vencimento_estimado { get; set; }
+        public DateTime? data_vencimento_estimado { get; set; }
     }
 }
