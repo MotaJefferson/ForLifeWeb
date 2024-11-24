@@ -94,3 +94,13 @@
     font-size: 16px; /* Ajuste opcional do tamanho da fonte */
     line-height: 1.2; /* Controla a proporção da altura do conteúdo */
 }
+
+.texto-centralizado {
+    color: white;
+}
+
+.centralizar-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

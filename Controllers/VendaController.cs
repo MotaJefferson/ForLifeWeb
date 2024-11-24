@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ForLifeWeb.Data;
 using ForLifeWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForLifeWeb.Controllers
 {
@@ -20,12 +21,14 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Venda
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Vendas.ToListAsync());
         }
 
         // GET: Venda/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +47,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Venda/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +58,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("id_venda,produto_id,cliente_id,numero_venda,data_registro,quantidade_venda,data_venda,preco_unitario,valor_venda")] Venda venda)
         {
             if (ModelState.IsValid)
@@ -66,6 +71,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Venda/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +92,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("id_venda,produto_id,cliente_id,numero_venda,data_registro,quantidade_venda,data_venda,preco_unitario,valor_venda")] Venda venda)
         {
             if (id != venda.id_venda)
@@ -117,6 +124,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Venda/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +145,7 @@ namespace ForLifeWeb.Controllers
         // POST: Venda/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var venda = await _context.Vendas.FindAsync(id);

@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"] - ForLifeWeb</title>
-    <meta name="robots" content="index,follow">
+    @RenderSection("HeadContent", required: false)
 
+    <meta name="robots" content="index,follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/assets/logo_forlife.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -20,7 +21,7 @@
         <nav class="navbar navbar-expand-md bg-success bg-success-rgb navbar-dark">
 
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index" >FORLIFE</a>
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Menu" >FORLIFE</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -88,13 +89,29 @@
                         </li>
 
                         <li class="nav-item">
+                            <form id="logoutForm" method="post" asp-controller="Home" asp-action="Logout" style="display: none;">
+                                    @* O formulário de logout está oculto. Ele será enviado via JavaScript *@                               
+                            </form>
                             <a class="nav-link" href="#" onclick="confirmLogout(event)">SAIR <i class="bi bi-power"></i></a>
                         </li>
 
                     </ul>
-
                 </div>
             </div>
+            <script>
+                function confirmLogout(event) {
+                    // Previne o comportamento padrão do link
+                    event.preventDefault();
+
+                    // Exibe a mensagem de confirmação
+                    const userConfirmed = confirm("Tem certeza que deseja sair?");
+
+                    // Se o usuário confirmar, redireciona para a página de logout
+                    if (userConfirmed) {
+                        document.getElementById("logoutForm").submit();
+                    }
+                }
+            </script>
         </nav>
         <!-- Fim da barra de menu -->
 

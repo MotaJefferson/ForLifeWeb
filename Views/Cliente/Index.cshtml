@@ -96,19 +96,6 @@
     });
 </script>
 
-<script>
-    function confirmLogout(event) {
-        // Previne o comportamento padrão do link
-        event.preventDefault();
 
-        // Exibe a mensagem de confirmação
-        const userConfirmed = confirm("Tem certeza que deseja sair?");
-
-        // Se o usuário confirmar, redireciona para a página de logout
-        if (userConfirmed) {
-            window.location.href = "login.html"; // Altere "/logout" para a rota desejada
-        }
-    }
-</script>
 
 </body>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ForLifeWeb.Data;
 using ForLifeWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForLifeWeb.Controllers
 {
@@ -20,6 +21,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Plantio
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var dados = _context.Plantio
@@ -39,6 +41,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Plantio/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -57,6 +60,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Plantio/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -67,6 +71,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("id_plantio,insumo_id,produto_id,quantidade_plantio,data_plantio,data_colheita,data_vencimento_estimado,data_registro,data_baixa")] Plantio plantio)
         {
             if (ModelState.IsValid)
@@ -79,6 +84,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Plantio/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -99,6 +105,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("id_plantio,insumo_id,produto_id,quantidade_plantio,data_plantio,data_colheita,data_vencimento_estimado,data_registro,data_baixa")] Plantio plantio)
         {
             if (id != plantio.id_plantio)
@@ -130,6 +137,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Plantio/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -150,6 +158,7 @@ namespace ForLifeWeb.Controllers
         // POST: Plantio/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var plantio = await _context.Plantio.FindAsync(id);

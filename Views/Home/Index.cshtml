@@ -1,120 +1,119 @@
-﻿@{
+﻿@model ForLifeWeb.Models.Usuario
+@{
     ViewData["Title"] = "Home Page";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
 
-<body class="fundo">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./imagens/logo_forlife.png" type="image/x-icon">
+    <title>Login</title>
 
-    <main>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        <h1 class="mt-5 mb-5 text-left fw-bold px-lg-5 ms-5 subtitulo">
-            <span class="titulo_inicio">FOR</span><span class="titulo_meio">LI</span><span class="titulo_fim">FE</span>
-        </h1>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-        <div class="pt-2">
-            <!--Container (painel verde)-->
-            <div class="container-sm px-4 px-lg-5  text-center verde-transparente_titulo w-75">
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
 
-                <div class="col-md text-center ">
-                    <div class="form-floating ">
-                        <h2 class=" texto_padrao fs-4 ">MENU PRINCIPAL</h2>
-                    </div>
-                </div>
+<body class="fundo_escuro">
 
-            </div>
-            <div class="container-sm px-4 px-lg-5  text-center verde-transparente w-75 border rounded shadow py-5">
+    <!-- Inicio da barra de menu -->
+    <nav class="navbar navbar-expand-md bg-success bg-success-rgb navbar-dark">
 
-                <div class="row">
+        <div class="container-fluid">
 
-                    <div class="col-md text-center">
-                        <div class="form-floating mb-5 ">
-                            <h2 class=" texto_padrao fs-3"></h2>
-                        </div>
-                    </div>
+            <a class="navbar-brand fw-bold" href="#">FORLIFE</a>
 
-                </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <div class="row">
-
-                    <!--Botão (Anchor) para direcionar a tela vendas-->
-                    <div class="col-md-3 col-12">
-                        <div class="form-floating mb-2">
-                            <a asp-controller="Venda" asp-action="Index" class="btn btn-success btn-lg text-center rounded-pill mb-3">
-                                <i class="bi bi-currency-dollar fs-2 px-4"></i>
-                            </a>
-                            <div class="form-floating mb-4">
-                                <h6 class="text-success fw-bold">VENDAS</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Botão (Anchor) para direcionar a tela plantio-->
-                    <div class="col-md-3 col-12">
-                        <div class="form-floating mb-4">
-                            <a asp-controller="Plantio" asp-action="Index" class="btn btn-success btn-lg text-center rounded-pill mb-3">
-                                <i class="bi bi-tree-fill fs-2 px-4"></i>
-                            </a>
-                            <div class="form-floating mb-2">
-                                <h6 class="text-success fw-bold">PLANTIO</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Botão (Anchor) para direcionar a tela estoque_produto-->
-                    <div class="col-md-3 col-12 ">
-                        <div class="form-floating mb-2 ">
-                            <a href="estoque_produto.html" class="btn btn-success btn-lg text-center rounded-pill mb-3">
-                                <i class="bi bi-box-seam-fill fs-2 px-4"></i>
-                            </a>
-                            <div class="form-floating mb-4">
-                                <h6 class="text-success fw-bold ">ESTOQUE</br> PRODUTO</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Botão (Anchor) para direcionar a tela estoque_insumo-->
-                    <div class="col-md-3 col-12">
-                        <div class="form-floating mb-2">
-                            <a href="estoque_insumo.html" class="btn btn-success btn-lg text-center rounded-pill mb-3">
-                                <i class="bi bi-box-seam fs-2 px-4"></i>
-                            </a>
-                            <div class="form-floating mb-4">
-                                <h6 class="text-success fw-bold">ESTOQUE</br> INSUMO</h6>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 px-md-5">
+                </ul>
 
             </div>
-
         </div>
+    </nav>
+    <!-- Fim da barra de menu -->
 
+    <div class="container mt-5 ">
+        <div class="row align-items-center">
+            <div class="coll-md-10 mx-auto col-lg-5">
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
+                <!--Título FORLIFE-->
+                <h2 class="titulo"><span class="titulo_inicio">FOR</span><span class="titulo_meio">LI</span><span
+                        class="titulo_fim">FE</span></h2>
 
-        <script>
-            function confirmLogout(event) {
-                // Previne o comportamento padrão do link
-                event.preventDefault();
-
-                // Exibe a mensagem de confirmação
-                const userConfirmed = confirm("Tem certeza que deseja sair?");
-
-                // Se o usuário confirmar, redireciona para a página de logout
-                if (userConfirmed) {
-                    window.location.href = "login.html"; // Altere "/logout" para a rota desejada
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
                 }
-            }
+
+                <form method="post" action="/Home/Login" class="p-4 p-md-5">
+
+                    <!--Campo de login-->
+                    <div class="form-floating mb-3 mt-2">
+                        <input type="text" class="form-control" name="usuario" id="usuario_telaLogin" placeholder="Login do Usuário" required>
+                        <label for="usuario_telaLogin">Usuário</label>
+                    </div>
+
+                    <!--Campo de senha-->
+                    <div class="form-floating mb-3 mt-2 position-relative">
+                        <input type="password" class="form-control" name="senha" id="senha" placeholder="Senha" required>
+                        <label for="senha">Senha</label>
+                        <button type="button" id="togglePassword" class="btn position-absolute end-0 top-50 translate-middle-y me-2">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    <!-- Lembrar-me -->
+                    <div class="centralizar-div">
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="lembrarMe" id="lembrarMe">
+                            <label class="form-check-label texto-centralizado" for="lembrarMe">Lembrar-me</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class=" w-100 btn btn-success">LOGAR</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
         </script>
 
-    </main>
+    <script>
+        function confirmLogout(event) {
+            // Previne o comportamento padrão do link
+            event.preventDefault();
+        }
+
+    </script>
+
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('senha');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
 
 </body>
-
-
-</html>

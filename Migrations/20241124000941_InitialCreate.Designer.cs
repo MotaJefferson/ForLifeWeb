@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ForLifeWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241123192414_AdicionarFormaPagamento")]
-    partial class AdicionarFormaPagamento
+    [Migration("20241124000941_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,9 @@ namespace ForLifeWeb.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_cliente"));
+
+                    b.Property<bool>("ativo")
+                        .HasColumnType("bit");
 
                     b.Property<string>("cpf")
                         .IsRequired()
@@ -257,6 +260,9 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_produto"));
 
+                    b.Property<bool>("ativo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("descricao")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -335,6 +341,9 @@ namespace ForLifeWeb.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_usuario"));
+
+                    b.Property<bool>("ativo")
+                        .HasColumnType("bit");
 
                     b.Property<string>("cargo")
                         .IsRequired()

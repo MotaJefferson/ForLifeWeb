@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ForLifeWeb.Data;
 using ForLifeWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForLifeWeb.Controllers
 {
@@ -20,6 +21,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Usuario
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var usuarios = _context.Usuarios
@@ -42,6 +44,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Usuario/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -60,6 +63,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Usuario/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -70,6 +74,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("id_usuario,nome,cargo,cpf,cod_usuario,senha,data_cadastro")] Usuario usuario)
         {
             if (ModelState.IsValid)
@@ -82,6 +87,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Usuario/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -102,6 +108,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("id_usuario,nome,cargo,cpf,cod_usuario,senha,data_cadastro")] Usuario usuario)
         {
             if (id != usuario.id_usuario)
@@ -133,6 +140,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Usuario/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -153,6 +161,7 @@ namespace ForLifeWeb.Controllers
         // POST: Usuario/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);

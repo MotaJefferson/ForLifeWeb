@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ForLifeWeb.Data;
 using ForLifeWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForLifeWeb.Controllers
 {
@@ -20,12 +21,14 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Insumo
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Insumos.ToListAsync());
         }
 
         // GET: Insumo/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +47,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Insumo/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +58,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("id_insumo,nome,descricao,tipo,ativo,periodo_vencimento")] Insumo insumo)
         {
             if (ModelState.IsValid)
@@ -66,6 +71,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Insumo/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +92,7 @@ namespace ForLifeWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("id_insumo,nome,descricao,tipo,ativo,periodo_vencimento")] Insumo insumo)
         {
             if (id != insumo.id_insumo)
@@ -117,6 +124,7 @@ namespace ForLifeWeb.Controllers
         }
 
         // GET: Insumo/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +145,7 @@ namespace ForLifeWeb.Controllers
         // POST: Insumo/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var insumo = await _context.Insumos.FindAsync(id);
