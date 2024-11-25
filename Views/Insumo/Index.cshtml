@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ForLifeWeb.Models.Insumo>
+﻿@using ForLifeWeb.Models
+@model IEnumerable<(Insumo Insumo, InsumoEstoque InsumoEstoque)>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,31 +7,6 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="./imagens/logo_forlife.png" type="image/x-icon">
-    <title>Estoque Insumo</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="estilo.css?v=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
-            /* Ajustes para container e tabela */
-        .container-tabela {
-            max-width: 100%;
-            /* Define o limite de largura do container */
-            overflow-x: auto;
-            /* Permite rolagem horizontal se necessário */
-        }
-
-        #tabela-estoque {
-            width: 100%;
-            /* Faz a tabela ocupar toda a largura do container */
-        }
-    </style>
-</head>
 
 <body class="fundo">
 
@@ -44,7 +20,7 @@
             <div class="input-group mb-4">
                 <input type="text" class="form-control" placeholder="Pesquisar Insumos" id="inp-pesquisa-estoqueInsumo"
                        aria-label="Pesquisar Insumos">
-                <button class="btn btn-success" type="button" id="btn-pesquisa-estoqueInsumo">
+                <button class="btn btn-success" type="button" id="btn-pesquisa-estoqueInsumo" data-action-url="@Url.Action("Index", "Insumo")">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
@@ -54,7 +30,7 @@
 
                 <!-- Botão Cadastrar insumo -->
                 <div class="col-auto pt-2">
-                    <a href="cadastro_insumo.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1"
                        data-bs-toggle="tooltip" title="Cadastrar novo insumo">
                         <i class="bi bi-plus-lg"></i>
                         <i class="bi bi-pencil-fill px-2"></i>
@@ -71,7 +47,7 @@
 
                 <!-- Botão Atualizar estoque -->
                 <div class="col-auto pt-2">
-                    <a href="estoque_insumo.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1"
                        data-bs-toggle="tooltip" title="Atualizar estoque" id="anc-atualizar-estoqueInsumo">
                         <i class="bi bi-arrow-repeat px-4"></i>
                     </a>
@@ -86,11 +62,14 @@
                 </div>
             </div>
 
-            <!-- Tabela do estoque -->
+            <!-- Tabela do insumo -->
             <div class="table-responsive mx-1">
                 <table class="table table-hover table-bordered text-center" id="tabela-estoque-insumo">
                     <thead class="table-success">
                         <tr>
+                            <th scope="col">
+                                <input type="checkbox" id="select-all" title="Selecionar todos">
+                            </th>
                             <th scope="col">ID</th>
                             <th scope="col">Insumo</th>
                             <th scope="col">Quantidade</th>
@@ -98,12 +77,160 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Linhas serão preenchidas via JavaScript -->
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <!-- Coluna do checkbox -->
+                                <td>
+                                    <input type="checkbox" class="select-produto" value="@item.Insumo.id_insumo">
+                                </td>
+                                <!-- Demais colunas -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.InsumoEstoque.id_estoque)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Insumo.nome)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.InsumoEstoque.quantidade_atual)
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
+
+
+    <script>
+        // Seleção de checkboxes
+        document.addEventListener('DOMContentLoaded', () => {
+            // Checkbox "Selecionar todos"
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', () => {
+                    const checkboxes = document.querySelectorAll('.select-produto');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+            }
+
+            // Atualizar estado do "Selecionar todos" baseado nos checkboxes individuais
+            const rowCheckboxes = document.querySelectorAll('.select-produto');
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
+                    const noneChecked = Array.from(rowCheckboxes).some(cb => !cb.checked);
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+                });
+            });
+
+            // Clique na linha seleciona/desmarca o checkbox
+            const rows = document.querySelectorAll('#tabela-estoque-insumo tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('click', (event) => {
+                    const checkbox = row.querySelector('.select-produto');
+                    if (event.target.tagName !== 'INPUT' && checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change')); // Atualiza o "Selecionar todos"
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // Pesquisa dinâmica
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('inp-pesquisa-estoqueInsumo');
+            const searchButton = document.getElementById('btn-pesquisa-estoqueInsumo');
+            const tableBody = document.querySelector('#tabela-estoque-insumo tbody');
+
+            const updateTable = (htmlContent) => {
+                tableBody.innerHTML = htmlContent;
+            };
+
+            const searchInsumos = () => {
+                const searchTerm = searchInput?.value.trim();
+                const url = searchButton?.dataset.actionUrl;
+
+                if (!url || !searchTerm) return;
+
+                fetch(`${url}?searchTerm=${encodeURIComponent(searchTerm)}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        updateTable(html);
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Não foi possível buscar os dados.');
+                    });
+            };
+
+            if (searchButton) {
+                searchButton.addEventListener('click', searchInsumos);
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter') {
+                        searchInsumos();
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        // Recarregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnAtualizarEstoque = document.querySelector('[title="Atualizar estoque"]');
+
+            if (btnAtualizarEstoque) {
+                btnAtualizarEstoque.addEventListener('click', () => {
+                    location.reload();
+                });
+            }
+        });
+    </script>
+
+    <script> // Botão incluir/editar
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnCadastrarInsumo = document.querySelector('[title="Cadastrar novo insumo"]');
+            const selectCheckboxes = document.querySelectorAll('.select-produto');
+
+            if (btnCadastrarInsumo) {
+                btnCadastrarInsumo.addEventListener('click', () => {
+                    const selectedIds = [];
+                    selectCheckboxes.forEach((checkbox) => {
+                        if (checkbox.checked) {
+                            selectedIds.push(parseInt(checkbox.value));
+                        }
+                    });
+
+                    // Envia os IDs selecionados para o controlador
+                    if (selectedIds.length === 0) {
+                        window.location.href = '@Url.Action("Create", "Insumo")';
+                    } else if (selectedIds.length === 1) {
+                        window.location.href = `@Url.Action("Edit", "Insumo", new { id = "__id__" })`.replace("__id__", selectedIds[0]);
+                    } else {
+                        alert('Selecione apenas um insumo para edição.');
+                    }
+                });
+            }
+        });
+    </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
@@ -119,13 +246,6 @@
             tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
         });
 
-        // Dados simulados com ID para cada produto
-        const dadosSimulados = [
-            { id: 1, Insumo: "Semente de morango", quantidade: 150, dataVencimento: "2025-07-09" },
-            { id: 2, Insumo: "Adubo", quantidade: 730, dataVencimento: "2025-02-05" },
-            { id: 3, Insumo: "Muda de alface", quantidade: 28, dataVencimento: "2024-12-10" },
-            { id: 4, Insumo: "Semente de pepino", quantidade: 87, dataVencimento: "2025-12-15" }
-        ];
 
         function dataVencimentoExpirada(dataVencimento) {
             const dataAtual = new Date();

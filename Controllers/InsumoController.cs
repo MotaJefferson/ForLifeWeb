@@ -22,9 +22,45 @@ namespace ForLifeWeb.Controllers
 
         // GET: Insumo
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            return View(await _context.Insumos.ToListAsync());
+            var query = from insumo in _context.Insumos
+                        join estoque in _context.InsumoEstoque
+                        on insumo.id_insumo equals estoque.insumo_id into estoqueGroup
+                        from estoque in estoqueGroup.DefaultIfEmpty()
+                        where insumo.ativo == true
+                        select new
+                        {
+                            Insumo = insumo,
+                            InsumoEstoque = estoque
+                        };
+
+            // Se houver um termo de pesquisa, aplica o filtro
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x => x.Insumo.nome.Contains(searchTerm));
+            }
+
+            var result = await query.ToListAsync();
+            var model = result.Select(x => (Insumo: x.Insumo, InsumoEstoque: x.InsumoEstoque)).ToList();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                // Gerar o HTML diretamente no servidor e retornar
+                var tableRows = model.Select(item => $@"
+            <tr class='insumo-row'>
+                <td><input type='checkbox' class='select-insumo' value='{item.Insumo.id_insumo}'></td>
+                <td>{(item.InsumoEstoque != null ? item.InsumoEstoque.id_estoque.ToString() : "-")}</td>
+                <td class='insumo-nome'>{item.Insumo.nome}</td>
+                <td>{item.InsumoEstoque?.quantidade_atual ?? 0}</td>
+            </tr>
+            ");
+
+                return Content(string.Join("", tableRows), "text/html");
+            }
+
+            return View(model);
+        
         }
 
         // GET: Insumo/Details/5
@@ -54,8 +90,6 @@ namespace ForLifeWeb.Controllers
         }
 
         // POST: Insumo/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -88,8 +122,6 @@ namespace ForLifeWeb.Controllers
         }
 
         // POST: Insumo/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -97,6 +129,7 @@ namespace ForLifeWeb.Controllers
         {
             if (id != insumo.id_insumo)
             {
+                Console.WriteLine($"ID de URL: {id}, ID do Insumo: {insumo.id_insumo}");
                 return NotFound();
             }
 
@@ -161,6 +194,25 @@ namespace ForLifeWeb.Controllers
         private bool InsumoExists(int id)
         {
             return _context.Insumos.Any(e => e.id_insumo == id);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RedirectBasedOnSelection(List<int> selectedIds)
+        {
+            if (selectedIds == null || selectedIds.Count == 0)
+            {
+                return RedirectToAction("Create");
+            }
+            else if (selectedIds.Count == 1)
+            {
+                return RedirectToAction("Edit", new { id = selectedIds[0] });
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Você não pode selecionar mais de um produto para editar.";
+                return RedirectToAction("Index");
+            }
         }
     }
 }

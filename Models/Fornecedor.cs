@@ -7,18 +7,18 @@ namespace ForLifeWeb.Models
         [Key]
         public int id_fornecedor { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string nome { get; set; }
+        [StringLength(5)]
+        public string? tipo { get; set; }
 
-        [StringLength(15)]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
-        public string? cpf { get; set; }
+        [StringLength(100)]
+        public string? nome { get; set; }
 
         [StringLength(100)]
         public string? razao_social { get; set; }
 
-        [RegularExpression(@"^\d{14}$", ErrorMessage = "CNPJ inválido")]
+        [StringLength(15)]
+        public string? cpf { get; set; }
+
         [StringLength(20)]
         public string? cnpj { get; set; }
 
@@ -26,6 +26,9 @@ namespace ForLifeWeb.Models
         public string? telefone { get; set; }
 
         [StringLength(500)]
-        public string? endereco { get; set; }
+        public string? observacoes { get; set; }
+
+        [Required]
+        public bool ativo { get; set; }
     }
 }

@@ -16,59 +16,76 @@
 
 
             <div class="d-flex justify-content-center align-items-center">
-                <form class="w-100">
+
+                <form method="post" asp-action="Create" class="w-100">
+
+                    @Html.AntiForgeryToken()
+
                     <!--Seleção de cadastro ativo ou inativo-->
 
-                <input type="radio" class="btn-check " name="options-base" id="radio-usuario-ativo" autocomplete="off" checked>
+                    <input type="radio" class="btn-check " name="ativo" value="true" id="radio-usuario-ativo" autocomplete="off" checked>
                     <label class="btn" for="radio-usuario-ativo">Ativo</label>
 
-                <input type="radio" class="btn-check" name="options-base" id="radio-usuario-inativo" autocomplete="off">
+                    <input type="radio" class="btn-check" name="ativo" value="false" id="radio-usuario-inativo" autocomplete="off">
                     <label class="btn" for="radio-usuario-inativo">Inativo</label>
 
                     <!--Campo nome completo-->
                     <div class="form-floating mb-2 mt-3">
-                        <input type="text" class="form-control" id="nomeCompleto_usuario" placeholder="Nome completo"
+                        <input type="text" class="form-control" name="nome" id="nomeCompleto_usuario" placeholder="Nome completo"
                             required autofocus>
                         <label for="nomeCompleto_usuario">Nome completo</label>
                     </div>
 
                     <!--Campo CPF-->
                     <div class="form-floating mb-2">
-                        <input type="text" class="form-control" id="cpf_usuario" placeholder="000.000.000-00"
+                        <input type="text" class="form-control" name="cpf" id="cpf_usuario" placeholder="000.000.000-00"
                             oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)" required>
-                        <label for="cpf_usuario">CPF</label>
+                        <label for="cnpj_usuario">CPF</label>
                         <small id="cpfFeedback" class="text-danger"></small>
                     </div>
 
                     <!--Campo suspenso para selecionar o cargo-->
                     <div class="form-floating mb-2">
                         <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
-                        <select class="form-select" id="tipoDeUsuario">
-                            <option selected>Selecione o cargo</option>
-                            <option value="1">Gestor</option>
-                            <option value="2">Agricultor</option>
-                            <option value="3">Comercial</option>
+                        <select class="form-select" name="cargo" id="cargo">
+                            <option selected hidden>Selecione o cargo</option>
+                            <option>Gestor</option>
+                            <option>Agricultor</option>
+                            <option>Comercial</option>
                         </select>
+                        <label for="cargo">Tipo de Usuário</label>
+
+                        <!-- Botão de limpar (X) -->
+                        <button type="button" id="clearSelection" class="btn position-absolute"
+                                style="top: 50%; right: 40px; transform: translateY(-50%); display: none; padding: 0; border: none; background: none; color: black; font-size: 14px; line-height: 1;">
+                            &#x2715;
+                        </button>
+
                     </div>
 
                     <!--Campo definir o usuário-->
                     <div class="row">
                         <div class="col">
                             <div class="form-floating mb-2">
-                                <input type="text" class="form-control" id="nomeUsuario_usuario"
+                                <input type="text" name="cod_usuario" class="form-control" id="nomeUsuario_usuario"
                                     placeholder="Usuario para Login" required>
-                                <label for="nomeUsuario_usuario">Usuário</label>
+                                <label for="nomeUsuario_usuario">Usuário de Login</label>
                             </div>
                         </div>
 
                         <!--Campo para definir senha-->
                         <div class="col">
                             <div class="form-floating mb-2">
-                                <input type="password" class="form-control" id="senha_usuario" placeholder="Senha"
+                                <input type="password" class="form-control" name="senha" id="senha_usuario" placeholder="Senha"
                                     oninput="validarSenha(this)" required>
                                 <label for="senha_usuario">Senha</label>
                                 <small id="senhaFeedback" class="text-danger"></small> <!-- Mensagem de validação -->
-                            </div>
+
+                                <button type="button" id="togglePassword" class="btn position-absolute end-0 top-50 translate-middle-y me-2" style="top: 50%;">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                            </div>                            
                         </div>
                     </div>
 
@@ -81,7 +98,7 @@
 
                     <!--Botão listar todos - deve direcionar para listagem_usuario-->
                         <div class="col-md-3 col-8">
-                            <button type="submit" href="listagem_usuario.html" id="btn-listartodos-usuario" class="btn btn-success mt-3 w-100">Listar todos</button>
+                            <a asp-controller="Usuario" asp-action="index" id="btn-listartodos-usuario" class="btn btn-success mt-3 w-100">Listar todos</a>
                         </div>
                     </div>
 
@@ -90,6 +107,24 @@
 
         </div>
     </main>
+
+    <script> //Ocultar-Exibir senha
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('senha_usuario');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
+
 
     <script> //Máscara para o CPF
         function aplicarMascaraCPF(input) {
@@ -117,6 +152,26 @@
                 feedback.className = "text-success"; // Texto verde
             }
         }
+
+        const selectElement = document.getElementById('tipoDeUsuario');
+        const clearButton = document.getElementById('clearSelection');
+
+        // Mostrar o botão "X" quando uma opção é selecionada
+            selectElement.addEventListener('change', () => {
+                if (selectElement.value !== '' && selectElement.value !== 'Selecione o tipo de insumo') {
+                    clearButton.style.display = 'inline-block';
+                }
+            });
+
+        // Limpar seleção ao clicar no botão "X"
+            clearButton.addEventListener('click', () => {
+                selectElement.value = '';
+                clearButton.style.display = 'none';
+
+                // Redefine o texto "Selecione o tipo de insumo"
+                const placeholderOption = selectElement.querySelector('option[hidden]');
+                placeholderOption.selected = true;
+            });
 
 
         //Validação de segurança da senha

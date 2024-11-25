@@ -38,14 +38,14 @@ namespace ForLifeWeb.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<string>("endereco")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("observacoes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("telefone")
                         .HasMaxLength(15)
@@ -64,6 +64,9 @@ namespace ForLifeWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_fornecedor"));
 
+                    b.Property<bool>("ativo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("cnpj")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -72,14 +75,13 @@ namespace ForLifeWeb.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<string>("endereco")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("nome")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("observacoes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("razao_social")
                         .HasMaxLength(100)
@@ -88,6 +90,10 @@ namespace ForLifeWeb.Migrations
                     b.Property<string>("telefone")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("tipo")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.HasKey("id_fornecedor");
 
@@ -122,7 +128,12 @@ namespace ForLifeWeb.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("usuario_id")
+                        .HasColumnType("int");
+
                     b.HasKey("id_insumo");
+
+                    b.HasIndex("usuario_id");
 
                     b.ToTable("Insumos");
                 });
@@ -181,13 +192,13 @@ namespace ForLifeWeb.Migrations
                     b.Property<DateTime?>("data_saida")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_vencimento_estimado")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("fornecedor_id")
                         .HasColumnType("int");
 
                     b.Property<int>("insumo_id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("quantidade_anterior")
                         .HasColumnType("int");
 
                     b.Property<int?>("quantidade_atual")
@@ -198,6 +209,11 @@ namespace ForLifeWeb.Migrations
 
                     b.Property<int?>("quantidade_saida")
                         .HasColumnType("int");
+
+                    b.Property<string>("tipo_movimento")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
 
                     b.HasKey("id_estoque");
 
@@ -228,7 +244,7 @@ namespace ForLifeWeb.Migrations
                     b.Property<DateTime?>("data_registro")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("data_vencimento_estimado")
+                    b.Property<DateTime?>("data_vencimento")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("insumo_id")
@@ -315,6 +331,9 @@ namespace ForLifeWeb.Migrations
                     b.Property<int>("produto_id")
                         .HasColumnType("int");
 
+                    b.Property<int?>("quantidade_anterior")
+                        .HasColumnType("int");
+
                     b.Property<int>("quantidade_atual")
                         .HasColumnType("int");
 
@@ -323,6 +342,11 @@ namespace ForLifeWeb.Migrations
 
                     b.Property<int?>("quantidade_saida")
                         .HasColumnType("int");
+
+                    b.Property<string>("tipo_movimento")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
 
                     b.HasKey("id_estoque");
 
@@ -357,8 +381,10 @@ namespace ForLifeWeb.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<DateTime>("data_cadastro")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("data_cadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("nome")
                         .IsRequired()
@@ -421,6 +447,16 @@ namespace ForLifeWeb.Migrations
                     b.HasIndex("produto_id");
 
                     b.ToTable("Vendas");
+                });
+
+            modelBuilder.Entity("ForLifeWeb.Models.Insumo", b =>
+                {
+                    b.HasOne("ForLifeWeb.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("usuario_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ForLifeWeb.Models.InsumoCompra", b =>

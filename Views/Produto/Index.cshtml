@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ForLifeWeb.Models.Produto>
+﻿@using ForLifeWeb.Models
+@model IEnumerable<(Produto Produto, ProdutoEstoque ProdutoEstoque)>
 
 @{
     ViewData["Title"] = "Index";
@@ -15,7 +16,7 @@
             <div class="input-group mb-4">
                 <input type="text" class="form-control" placeholder="Pesquisar Produtos" id="campo-pesquisa"
                        aria-label="Pesquisar Produtos">
-                <button class="btn btn-success" type="button" id="btn-pesquisar">
+                <button class="btn btn-success" type="button" id="btn-pesquisar" data-action-url="@Url.Action("Index", "Produto")">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
@@ -25,12 +26,13 @@
 
                 <!-- Botão Cadastrar produto -->
                 <div class="col-auto pt-2">
-                    <a href="cadastro_produto.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
-                       data-bs-toggle="tooltip" title="Cadastrar novo produto">
+                    <button id="btnCadastrarProduto" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                            data-bs-toggle="tooltip" title="Cadastrar novo produto">
                         <i class="bi bi-plus-lg"></i>
                         <i class="bi bi-pencil-fill px-2"></i>
-                    </a>
+                    </button>
                 </div>
+
 
                 <!-- Botão Descartar -->
                 <div class="col-auto pt-2">
@@ -42,7 +44,7 @@
 
                 <!-- Botão Atualizar estoque -->
                 <div class="col-auto pt-2">
-                    <a href="estoque_produto.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                    <a class="btn btn-success btn-lg text-center rounded-pill mb-1"
                        data-bs-toggle="tooltip" title="Atualizar estoque">
                         <i class="bi bi-arrow-repeat px-4"></i>
                     </a>
@@ -62,6 +64,9 @@
                 <table class="table table-hover table-bordered text-center" id="tabela-estoque-produto">
                     <thead class="table-success">
                         <tr>
+                            <th scope="col">
+                                <input type="checkbox" id="select-all" title="Selecionar todos">
+                            </th>
                             <th scope="col">ID</th>
                             <th scope="col">Produto</th>
                             <th scope="col">Quantidade</th>
@@ -73,6 +78,23 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <!-- Coluna do checkbox -->
+                                <td>
+                                    <input type="checkbox" class="select-produto" value="@item.Produto.id_produto">
+                                </td>
+                                <!-- Demais colunas -->
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProdutoEstoque.id_estoque)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Produto.nome)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProdutoEstoque.quantidade_atual)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProdutoEstoque.data_colheita)
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -81,8 +103,146 @@
         </div>
     </main>
 </body>
+    
+    <script>
+        // Seleção de checkboxes
+        document.addEventListener('DOMContentLoaded', () => {
+            // Checkbox "Selecionar todos"
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', () => {
+                    const checkboxes = document.querySelectorAll('.select-produto');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+            }
+
+            // Atualizar estado do "Selecionar todos" baseado nos checkboxes individuais
+            const rowCheckboxes = document.querySelectorAll('.select-produto');
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
+                    const noneChecked = Array.from(rowCheckboxes).some(cb => !cb.checked);
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+                });
+            });
+
+            // Clique na linha seleciona/desmarca o checkbox
+            const rows = document.querySelectorAll('#tabela-estoque-produto tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('click', (event) => {
+                    const checkbox = row.querySelector('.select-produto');
+                    if (event.target.tagName !== 'INPUT' && checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change')); // Atualiza o "Selecionar todos"
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // Pesquisa dinâmica
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('campo-pesquisa');
+            const searchButton = document.getElementById('btn-pesquisar');
+            const tableBody = document.querySelector('#tabela-estoque-produto tbody');
+
+            const updateTable = (htmlContent) => {
+                tableBody.innerHTML = htmlContent;
+            };
+
+            const searchProducts = () => {
+                const searchTerm = searchInput?.value.trim();
+                const url = searchButton?.dataset.actionUrl;
+
+                if (!url || !searchTerm) return;
+
+                fetch(`${url}?searchTerm=${encodeURIComponent(searchTerm)}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        updateTable(html);
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Não foi possível buscar os dados.');
+                    });
+            };
+
+            if (searchButton) {
+                searchButton.addEventListener('click', searchProducts);
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter') {
+                        searchProducts();
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script> //Recarregar a pagina
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnAtualizarEstoque = document.querySelector('[title="Atualizar estoque"]');
+
+            if (btnAtualizarEstoque) {
+                btnAtualizarEstoque.addEventListener('click', () => {
+                    // Recarregar a página para voltar ao estado inicial
+                    location.reload();
+                });
+            }
+        });
+    </script>
+
+    <script> //Botão incluir/editar
+
+        document.addEventListener('DOMContentLoaded', () => {
+        // Captura o clique no botão de cadastrar novo produto
+        const btnCadastrarProduto = document.getElementById('btnCadastrarProduto');
+        const selectCheckboxes = document.querySelectorAll('.select-produto');
+
+        if (btnCadastrarProduto) {
+            btnCadastrarProduto.addEventListener('click', () => {
+                const selectedIds = [];
+                selectCheckboxes.forEach((checkbox) => {
+                    if (checkbox.checked) {
+                        selectedIds.push(parseInt(checkbox.value));
+                    }
+                });
+
+                // Envia os IDs selecionados para o controlador
+                if (selectedIds.length === 0) {
+                    window.location.href = '@Url.Action("Create", "Produto")';
+                } else if (selectedIds.length === 1) {
+                    window.location.href = `@Url.Action("Edit", "Produto", new { id = "__id__" })`.replace("__id__", selectedIds[0]);
+                } else {
+                    alert("Você não pode selecionar mais de um produto para editar.");
+                }
+            });
+        }
+    });
+
+    @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+            </div>
+        }
+
+    </script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>

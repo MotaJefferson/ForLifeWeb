@@ -53,12 +53,10 @@ namespace ForLifeWeb.Controllers
         }
 
         // POST: Clientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("id_cliente,nome,telefone,cpf,endereco")] Cliente cliente)
+        public async Task<IActionResult> Create([Bind("id_cliente,nome,telefone,cpf,observacoes,ativo")] Cliente cliente)
         {
             if (ModelState.IsValid)
             {
@@ -87,8 +85,6 @@ namespace ForLifeWeb.Controllers
         }
 
         // POST: Clientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]

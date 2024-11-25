@@ -14,6 +14,9 @@ namespace ForLifeWeb.Models
         public int insumo_id { get; set; }
 
         [Range(0, int.MaxValue)]
+        public int? quantidade_anterior { get; set; }
+
+        [Range(0, int.MaxValue)]
         public int? quantidade_atual { get; set; }
 
         [Range(0, int.MaxValue)]
@@ -32,9 +35,10 @@ namespace ForLifeWeb.Models
         public DateTime? data_baixa { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime? data_registro { get; set; }
+        public DateTime? data_registro { get; set; } = DateTime.Now;
 
-        [DataType(DataType.Date)]
-        public DateTime? data_vencimento_estimado { get; set; }
+        [Required]
+        [StringLength(1)] 
+        public char tipo_movimento { get; set; } 
     }
 }

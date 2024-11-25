@@ -1,51 +1,205 @@
 ﻿@model ForLifeWeb.Models.Produto
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Produto</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.periodo_vencimento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.periodo_vencimento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.periodo_colheita)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.periodo_colheita)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.periodo_limite_colheita)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.periodo_limite_colheita)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="id_produto" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+<body class="fundo">
+
+    <main>
+        <div class="container-sm px-4 px-lg-5">
+            <h1 class="mt-5 mb-3 text-left ">
+                <span class="titulo_inicio">Cadastro</span>
+                <span class="titulo_meio"> de Prod</span><span class="titulo_fim">utos</span>
+            </h1>
+
+
+            <form method="post" asp-action="Create">
+
+                @Html.AntiForgeryToken()
+
+                <!--Seleção de cadastro ativo ou inativo-->
+
+                <input type="radio" class="btn-check" name="ativo" value="true" id="radio-produto-ativo" autocomplete="off" checked>
+                <label class="btn" for="radio-produto-ativo">Ativo</label>
+
+                <input type="radio" class="btn-check" name="ativo" value="false" id="radio-produto-inativo" autocomplete="off">
+                <label class="btn" for="radio-produto-inativo">Inativo</label>
+
+
+                <!-- Aqui começa a primeira linha com nome e código do produto -->
+                <div class="row pt-3">
+
+                    <!-- Campo nome do produto -->
+                    <div class="col-md-8 col-12">
+                        <div class="form-floating mb-2 ">
+                            <input type="text" class="form-control" name="nome" id="nome_produto" placeholder="Produto" required
+                                   autofocus>
+                            <label for="nome_produto">Nome do Produto</label>
+                        </div>
+                    </div>
+
+                    <!-- Campo código do produto -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="text" class="form-control" id="codigo_produto" placeholder="Codigo Produto"
+                                   disabled>
+                            <label for="codigo_produto">Código</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--Aqui começa a seunda linha com somente a Descrição -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="descricao_produto"
+                                   placeholder="descricao_produto" name="descricao">
+                            <label for="descricao_produto">Descrição</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabeçalho Insumo -->
+                <div class="row">
+                    <h5 class="text-left text-success  ">Insumo</h5>
+                </div>
+
+                <!-- Linha com Código Insumo -->
+                <div class="row">
+                    <div class="col-md-2 col-12">
+                        <div class="form-floating mb-4">
+                            <input type="number" step="1" min="1" class="form-control" id="codigo_insumo_produto"
+                                   placeholder="Código Insumo" name="insumo_id" required>
+                            <label for="codigo_insumo_produto">Código Insumo</label>
+                        </div>
+                    </div>
+
+                    <!-- Nome do insumo -->
+                    <div class="col-md-10 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="text" class="form-control" id="nome_insumo" placeholder="Codigo Produto"
+                                   disabled>
+                            <label for="nome_insumo">Nome do Insumo</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Cabeçalho Períodos de Colheita -->
+                <div class="row">
+                    <h5 class=" text-left text-success ">Períodos de Colheita</h5>
+                </div>
+
+                <!-- Linha com Períodos -->
+                <div class="row">
+
+                    <!-- Campo dias p/ colheita -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="number" class="form-control" id="periodo_colheita_produto" name="periodo_colheita"
+                                   placeholder="Período para colheita" required min="0">
+                            <label for="periodo_colheita_produto">Dias p/ Colheita</label>
+                        </div>
+                    </div>
+
+                    <!-- Campo dias p/ vencimento -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="number" class="form-control" id="periodo_vencimento_produto" name="periodo_vencimento"
+                                   placeholder="Período Vencimento" required min="0">
+                            <label for="periodo_vencimento_produto">Dias p/ Vencimento</label>
+                        </div>
+                    </div>
+
+                    <!-- Campo bloqueado para preenchimento automático com limitie da colheita -->
+                    <div class="col-md-4 col-12">
+                        <div class="form-floating mb-2">
+                            <input type="number" class="form-control" id="periodo__limite_colheita_produto"
+                                   placeholder="Período Limite Colheita" disabled>
+                            <label for="periodo__limite_colheita_produto">Limite</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Salvar -->
+                <div class="row pt-1 justify-content-left">
+                    <div class="col-md-3 col-8">
+                        <button type="submit" id="btn-salvar-cadProduto" class="btn btn-success mt-3 w-100">Salvar</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous">
+        </script>
+
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.6.0.min.js"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.6/jquery.unobtrusive-ajax.min.js"></script>
+
+
+        <script> //Validar campos negativos
+            document.getElementById('periodo_colheita_produto').addEventListener('input', (event) => {
+                const input = event.target;
+                if (input.value < 0) {
+                                input.value = ''; // Limpa o valor negativo
+                    alert('Por favor, insira um valor maior ou igual a 0');
+                }
+            });
+
+            document.getElementById('periodo_vencimento_produto').addEventListener('input', (event) => {
+                const input = event.target;
+                if (input.value < 0) {
+                                input.value = ''; // Limpa o valor negativo
+                    alert('Por favor, insira um valor maior ou igual a 0');
+                }
+            });
+
+            document.getElementById('codigo_insumo_produto').addEventListener('input', (event) => {
+                const input = event.target;
+                if (input.value < 1) {
+                                input.value = ''; // Limpa o valor negativo
+                    alert('Por favor, insira um valor maior que 0');
+                }
+            });
+
+        </script>
+
+        <script>
+            document.getElementById('codigo_insumo_produto').addEventListener('input', async (event) => {
+                const codigo = event.target.value.trim(); // Obtém o valor do campo
+                const nomeInsumoField = document.getElementById('nome_insumo');
+
+                // Limpa o campo Nome do Insumo
+                nomeInsumoField.value = "";
+
+                // Não faz a busca se o código estiver vazio
+                if (codigo === "") return;
+
+                try {
+                    // Faz a chamada AJAX ao servidor
+                    const response = await fetch(`/Produto/ObterNomeInsumo?codigoInsumo=${codigo}`);
+
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar o insumo.");
+                    }
+
+                    // Preenche o campo com o nome do insumo retornado
+                    const nome = await response.text();
+                    nomeInsumoField.value = nome || "Insumo não encontrado";
+                } catch (error) {
+                    console.error(error.message);
+                    nomeInsumoField.value = "Erro ao buscar o insumo";
+                }
+            });
+        </script>
+
+
+    </main>
+
+</body>

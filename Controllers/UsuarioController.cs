@@ -70,18 +70,25 @@ namespace ForLifeWeb.Controllers
         }
 
         // POST: Usuario/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("id_usuario,nome,cargo,cpf,cod_usuario,senha,data_cadastro")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("id_usuario,nome,cargo,cpf,cod_usuario,senha,data_cadastro,ativo")] Usuario usuario)
         {
             if (ModelState.IsValid)
-            {
+            {  
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    // Isso vai mostrar os erros de validação no console ou log
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                //return View(usuario);
             }
             return View(usuario);
         }

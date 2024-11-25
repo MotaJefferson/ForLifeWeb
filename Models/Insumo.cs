@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ForLifeWeb.Models
 {
@@ -23,5 +24,10 @@ namespace ForLifeWeb.Models
 
         [Range(1, 365, ErrorMessage = "Período de vencimento deve ser entre 1 e 365 dias.")]
         public int? periodo_vencimento { get; set; }
+
+        public int? usuario_id { get; set; }
+
+        [ForeignKey("usuario_id")]
+        public Usuario? Usuario { get; set; }
     }
 }

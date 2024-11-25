@@ -15,6 +15,9 @@ namespace ForLifeWeb.Models
         public int? quantidade_atual { get; set; }
 
         [Range(0, int.MaxValue)]
+        public int? quantidade_anterior { get; set; }
+
+        [Range(0, int.MaxValue)]
         public int? quantidade_saida { get; set; }
 
         [Range(0, int.MaxValue)]
@@ -34,6 +37,10 @@ namespace ForLifeWeb.Models
 
         [DataType(DataType.Date)]
         public DateTime? data_baixa { get; set; }
+
+        [Required]
+        [StringLength(1)]
+        public char tipo_movimento { get; set; }
 
     }
 }

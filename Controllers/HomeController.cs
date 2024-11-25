@@ -49,6 +49,14 @@ namespace ForLifeWeb.Controllers
 
             if (usuarioValido != null)
             {
+
+                // Verifica se o usuário está ativo
+                if (!usuarioValido.ativo)
+                {
+                    ViewBag.ErrorMessage = "O usuário está desabilitado.";
+                    return View("Index");
+                }
+
                 // Criação de claims para o usuário
                 var claims = new List<Claim>
                 {

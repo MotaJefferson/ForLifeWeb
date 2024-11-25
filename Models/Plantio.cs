@@ -24,7 +24,7 @@ namespace ForLifeWeb.Models
         public DateTime? data_colheita { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime? data_vencimento_estimado { get; set; }
+        public DateTime? data_vencimento { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? data_registro { get; set; }

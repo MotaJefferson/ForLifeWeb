@@ -28,7 +28,7 @@
 
             <!-- Botão alterar cadastro do cliente -->
             <div class="col-auto pt-2">
-                <a href="cadastro_cliente.html" class="btn btn-success btn-lg text-center rounded-pill mb-1"
+                <a class="btn btn-success btn-lg text-center rounded-pill mb-1"
                    data-bs-toggle="tooltip" title="Editar cadastro cliente">
                     <i class="bi bi-pencil-fill px-4"></i>
                 </a>
@@ -64,38 +64,173 @@
             <table class="table table-hover table-bordered text-center" id="tabela-cliente">
                 <thead class="table-success">
                     <tr>
+                        <th scope="col">
+                            <input type="checkbox" id="select-all" title="Selecionar todos">
+                        </th>
                         <th scope="col">ID</th>
                         <th scope="col">Nome do cliente</th>
                         <th scope="col">CPF</th>
                         <th scope="col">Telefone</th>
-                        <th scope="col">Endereço</th>
+                        <th scope="col">Observações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Linhas serão preenchidas via JavaScript -->
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <!-- Coluna do checkbox -->
+                            <td>
+                                <input type="checkbox" class="select-cliente" value="@item.id_cliente">
+                            </td>
+                            <!-- Demais colunas -->
+                            <td>
+                                @Html.DisplayFor(modelItem => item.id_cliente)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.nome)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.cpf)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.telefone)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.observacoes)
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
+
+
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-</script>
-<script>
-    // Inicializar tooltips
-    document.addEventListener("DOMContentLoaded", () => {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Checkbox "Selecionar todos"
+            const selectAllCheckbox = document.getElementById('select-all');
+            selectAllCheckbox.addEventListener('change', () => {
+                const checkboxes = document.querySelectorAll('.select-cliente');
+                    checkboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
+                });
+
+            // Atualizar estado do "Selecionar todos" baseado nos checkboxes individuais
+            const rowCheckboxes = document.querySelectorAll('.select-cliente');
+            rowCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        if (!checkbox.checked) {
+                            selectAllCheckbox.checked = false;
+                        } else if (Array.from(rowCheckboxes).every(cb => cb.checked)) {
+                        selectAllCheckbox.checked = true;
+                    }
+                });
+                });
+
+            // Clique na linha seleciona/desmarca o checkbox
+                const rows = document.querySelectorAll('#tabela-cliente tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('click', (event) => {
+                    const checkbox = row.querySelector('.select-cliente');
+                    // Evita conflito caso o clique seja diretamente no checkbox
+                    if (event.target.tagName !== 'INPUT') {
+                            checkbox.checked = !checkbox.checked;
+                            checkbox.dispatchEvent(new Event('change')); // Atualiza o "Selecionar todos" dinamicamente
+                        }
+                    });
+                });
+            });
+
+            // Pesquisa dinâmica
+            document.addEventListener('DOMContentLoaded', () => {
+                const searchInput = document.getElementById('inp-pesquisa-cliente');
+                const searchButton = document.getElementById('btn-pesquisa-cliente');
+                const tableBody = document.querySelector('#tabela-cliente tbody');
+
+                const updateTable = (htmlContent) => {
+                    tableBody.innerHTML = htmlContent;
+                };
+
+                const searchClientes = () => {
+                    const searchTerm = searchInput?.value.trim();
+                    const url = searchButton?.dataset.actionUrl;
+
+                    if (!url || !searchTerm) return;
+
+                    fetch(`${url}?searchTerm=${encodeURIComponent(searchTerm)}`, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            updateTable(html);
+                        })
+                        .catch(error => {
+                            console.error('Erro:', error);
+                            alert('Não foi possível buscar os dados.');
+                        });
+                };
+
+                if (searchButton) {
+                    searchButton.addEventListener('click', searchClientes);
+                }
+
+                if (searchInput) {
+                    searchInput.addEventListener('keypress', (event) => {
+                        if (event.key === 'Enter') {
+                            searchClientes();
+                        }
+                    });
+                }
+            });
+    </script>
+
+    @* <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        // Checkbox "Selecionar todos"
+        const selectAllCheckbox = document.getElementById('select-all');
+        selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.select-cliente');
+            checkboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
+        });
+
+        // Atualizar estado do "Selecionar todos" baseado nos checkboxes individuais
+        const rowCheckboxes = document.querySelectorAll('.select-cliente');
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if (!checkbox.checked) {
+                    selectAllCheckbox.checked = false;
+                } else if (Array.from(rowCheckboxes).every(cb => cb.checked)) {
+                    selectAllCheckbox.checked = true;
+                }
+            });
+        });
+
+        // Clique na linha seleciona/desmarca o checkbox
+        const rows = document.querySelectorAll('#tabela-cliente tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('click', (event) => {
+                const checkbox = row.querySelector('.select-cliente');
+                // Evita conflito caso o clique seja diretamente no checkbox
+                if (event.target.tagName !== 'INPUT') {
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change')); // Atualiza o "Selecionar todos" dinamicamente
+                }
+            });
+        });
     });
 
-
-    // Carrega os dados simulados ao carregar a página
-    document.addEventListener('DOMContentLoaded', () => {
-        carregarDadosClientes(dadosSimulados);
-    });
-</script>
-
-
+    </script> *@
 
 </body>

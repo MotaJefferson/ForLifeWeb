@@ -72,7 +72,7 @@ namespace ForLifeWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("id_plantio,insumo_id,produto_id,quantidade_plantio,data_plantio,data_colheita,data_vencimento_estimado,data_registro,data_baixa")] Plantio plantio)
+        public async Task<IActionResult> Create([Bind("id_plantio,insumo_id,produto_id,quantidade_plantio,data_plantio,data_colheita,data_vencimento,data_registro,data_baixa")] Plantio plantio)
         {
             if (ModelState.IsValid)
             {
@@ -106,7 +106,7 @@ namespace ForLifeWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("id_plantio,insumo_id,produto_id,quantidade_plantio,data_plantio,data_colheita,data_vencimento_estimado,data_registro,data_baixa")] Plantio plantio)
+        public async Task<IActionResult> Edit(int id, [Bind("id_plantio,insumo_id,produto_id,quantidade_plantio,data_plantio,data_colheita,data_vencimento,data_registro,data_baixa")] Plantio plantio)
         {
             if (id != plantio.id_plantio)
             {

@@ -42,6 +42,12 @@ namespace ForLifeWeb.Data
             modelBuilder.Entity<Venda>().Property(v => v.valor_venda).HasPrecision(18, 4);
             modelBuilder.Entity<Venda>().Property(v => v.preco_unitario).HasPrecision(18, 4);
 
+            modelBuilder.Entity<Usuario>()
+                .Property(u => u.data_cadastro)
+                .HasDefaultValueSql("GETDATE()");
+
+
+
             // Relacionamentos e DeleteBehavior
             modelBuilder.Entity<InsumoCompra>()
                 .HasOne<Fornecedor>()
@@ -102,6 +108,13 @@ namespace ForLifeWeb.Data
                 .WithMany()
                 .HasForeignKey(ie => ie.fornecedor_id)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Insumo>()
+                .HasOne(i => i.Usuario)
+                .WithMany()
+                .HasForeignKey(i => i.usuario_id)
+                .OnDelete(DeleteBehavior.Restrict); 
+
         }
 
     }

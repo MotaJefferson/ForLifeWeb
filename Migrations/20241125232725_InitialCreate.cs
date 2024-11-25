@@ -20,7 +20,7 @@ namespace ForLifeWeb.Migrations
                     nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     telefone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     cpf = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    endereco = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    observacoes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     ativo = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -34,33 +34,18 @@ namespace ForLifeWeb.Migrations
                 {
                     id_fornecedor = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    cpf = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    tipo = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     razao_social = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    cpf = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     cnpj = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     telefone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
-                    endereco = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    observacoes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    ativo = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Fornecedores", x => x.id_fornecedor);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Insumos",
-                columns: table => new
-                {
-                    id_insumo = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    tipo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ativo = table.Column<bool>(type: "bit", nullable: false),
-                    periodo_vencimento = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Insumos", x => x.id_insumo);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,12 +59,36 @@ namespace ForLifeWeb.Migrations
                     cpf = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     cod_usuario = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     senha = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    data_cadastro = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    data_cadastro = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()"),
                     ativo = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.id_usuario);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Insumos",
+                columns: table => new
+                {
+                    id_insumo = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    tipo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ativo = table.Column<bool>(type: "bit", nullable: false),
+                    periodo_vencimento = table.Column<int>(type: "int", nullable: true),
+                    usuario_id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Insumos", x => x.id_insumo);
+                    table.ForeignKey(
+                        name: "FK_Insumos_Usuarios_usuario_id",
+                        column: x => x.usuario_id,
+                        principalTable: "Usuarios",
+                        principalColumn: "id_usuario",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -119,6 +128,7 @@ namespace ForLifeWeb.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     fornecedor_id = table.Column<int>(type: "int", nullable: false),
                     insumo_id = table.Column<int>(type: "int", nullable: false),
+                    quantidade_anterior = table.Column<int>(type: "int", nullable: true),
                     quantidade_atual = table.Column<int>(type: "int", nullable: true),
                     quantidade_entrada = table.Column<int>(type: "int", nullable: true),
                     quantidade_saida = table.Column<int>(type: "int", nullable: true),
@@ -126,7 +136,7 @@ namespace ForLifeWeb.Migrations
                     data_saida = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_baixa = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_registro = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    data_vencimento_estimado = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    tipo_movimento = table.Column<string>(type: "nvarchar(1)", maxLength: 1, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,7 +191,7 @@ namespace ForLifeWeb.Migrations
                     quantidade_plantio = table.Column<int>(type: "int", nullable: false),
                     data_plantio = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_colheita = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    data_vencimento_estimado = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    data_vencimento = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_registro = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_baixa = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -210,13 +220,15 @@ namespace ForLifeWeb.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     produto_id = table.Column<int>(type: "int", nullable: false),
                     quantidade_atual = table.Column<int>(type: "int", nullable: false),
+                    quantidade_anterior = table.Column<int>(type: "int", nullable: true),
                     quantidade_saida = table.Column<int>(type: "int", nullable: true),
                     quantidade_colheita = table.Column<int>(type: "int", nullable: true),
                     data_colheita = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_saida = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_vencimento_estimado = table.Column<DateTime>(type: "datetime2", nullable: true),
                     data_registro = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    data_baixa = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    data_baixa = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    tipo_movimento = table.Column<string>(type: "nvarchar(1)", maxLength: 1, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -283,6 +295,11 @@ namespace ForLifeWeb.Migrations
                 column: "insumo_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Insumos_usuario_id",
+                table: "Insumos",
+                column: "usuario_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Plantio_insumo_id",
                 table: "Plantio",
                 column: "insumo_id");
@@ -329,9 +346,6 @@ namespace ForLifeWeb.Migrations
                 name: "ProdutoEstoque");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
-
-            migrationBuilder.DropTable(
                 name: "Vendas");
 
             migrationBuilder.DropTable(
@@ -345,6 +359,9 @@ namespace ForLifeWeb.Migrations
 
             migrationBuilder.DropTable(
                 name: "Insumos");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
         }
     }
 }

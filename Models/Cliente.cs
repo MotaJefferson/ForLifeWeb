@@ -16,11 +16,10 @@ namespace ForLifeWeb.Models
 
         [Required]
         [StringLength(15)]
-        //[RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
         public string cpf { get; set; }
 
         [StringLength(500)]
-        public string? endereco { get; set; }
+        public string? observacoes { get; set; }
 
         [Required]
         public bool ativo { get; set; }

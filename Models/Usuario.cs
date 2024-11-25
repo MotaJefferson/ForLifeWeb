@@ -18,7 +18,6 @@ namespace ForLifeWeb.Models
 
         [Required]
         [StringLength(15)]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido")]
         public string cpf { get; set; }
 
         [Required]
@@ -29,46 +28,11 @@ namespace ForLifeWeb.Models
         [StringLength(100, MinimumLength = 6)]
         public string senha { get; set; }
 
-        [Required]
         [DataType(DataType.Date)]
         public DateTime? data_cadastro { get; set; }
 
         [Required]
         public bool ativo { get; set; }
-
-
-        private static string GetConnectionString()
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.json");
-
-            var configuration = builder.Build();
-            return configuration.GetConnectionString("DefaultConnection");
-        }
-
-        public static bool ValidarLogin(string cod_usario, string senha)
-        {
-            var ret = false;
-            var connectionString = GetConnectionString();
-
-            using (var conexao = new SqlConnection(connectionString))
-            {
-                conexao.Open();
-                using (var comando = new SqlCommand())
-                {
-                    comando.Connection = conexao;
-
-                    comando.CommandText = string.Format(
-                        "SELECT COUNT(*) FROM Usuarios WHERE cod_usuario = '{0}' AND senha = '{0}'", cod_usario, senha);
-
-                    ret = ((int)comando.ExecuteScalar() > 0);
-                }
-            }
-            
-            return ret;
-
-        }
 
     }
 }

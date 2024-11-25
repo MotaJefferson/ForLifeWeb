@@ -54,20 +54,28 @@ namespace ForLifeWeb.Controllers
         }
 
         // POST: Fornecedor/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("id_fornecedor,nome,cpf,razao_social,cnpj")] Fornecedor fornecedor)
+        public async Task<IActionResult> Create([Bind("id_fornecedor,tipo,nome,razao_social,cpf,cnpj,telefone,observacoes,ativo")] Fornecedor fornecedor)
         {
+            
             if (ModelState.IsValid)
             {
+
                 _context.Add(fornecedor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(fornecedor);
+            else
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    // Isso vai mostrar os erros de validação no console ou log
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                return View(fornecedor);
+            }
         }
 
         // GET: Fornecedor/Edit/5
