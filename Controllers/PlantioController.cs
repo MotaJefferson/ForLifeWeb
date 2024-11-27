@@ -14,6 +14,7 @@ namespace ForLifeWeb.Controllers
 {
     public class PlantioController : Controller
     {
+
         private readonly AppDbContext _context;
 
         public PlantioController(AppDbContext context)
@@ -144,6 +145,81 @@ namespace ForLifeWeb.Controllers
 
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> Colher([FromBody] ColherRequest request)
+        {
+            if (request.PlantiosIds == null || !request.PlantiosIds.Any())
+            {
+                return Json(new { success = false, message = "Nenhum item selecionado." });
+            }
+
+            try
+            {
+                foreach (var plantioId in request.PlantiosIds)
+                {
+                    var plantio = await _context.Plantio.FindAsync(plantioId);
+                    if (plantio == null)
+                    {
+                        return Json(new { success = false, message = $"Plantio com ID {plantioId} não encontrado." });
+                    }
+
+                    var produto = await _context.Produtos.FirstOrDefaultAsync(p => p.id_produto == plantio.produto_id);
+
+                    if (produto == null)
+                    {
+                        return Json(new { success = false, message = $"Produto para o plantio ID {plantioId} não encontrado." });
+                    }
+
+                    // Lógica para colher e estocar
+                    DateTime dataEntrada = DateTime.Now;
+                    DateTime dataVencimentoEstimado = dataEntrada.AddDays(produto.periodo_vencimento);
+
+                    plantio.data_colheita = DateTime.Now;
+
+                    char tipoMovimento = 'E'; // Movimentação de entrada no estoque
+                    int quantidade = plantio.quantidade_plantio;
+
+                    var parametros = new[]
+                    {
+                    new SqlParameter("@TipoMovimento", tipoMovimento),
+                    new SqlParameter("@Quantidade", quantidade),
+                    new SqlParameter("@ProdutoId", plantio.produto_id),
+                    new SqlParameter("@DataColheita", plantio.data_colheita),
+                    new SqlParameter("@DataVencimentoEstimado", dataVencimentoEstimado),
+                    new SqlParameter("@DataSaida", DBNull.Value)
+                };
+
+                    int resultado = await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC AtualizaEstoqueProdutoMovimento @TipoMovimento, @Quantidade, @ProdutoId, @DataColheita, @DataVencimentoEstimado, @DataSaida",
+                        parametros
+                    );
+
+                    if (resultado == 0)
+                    {
+                        return Json(new { success = false, message = "Falha ao atualizar o estoque no banco de dados." });
+                    }
+
+                    _context.Add(plantio);
+                }
+
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Produtos colhidos e estocados com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Erro ao processar a colheita: {ex.Message}" });
+            }
+        }
+
+        public class ColherRequest
+        {
+            public List<int> PlantiosIds { get; set; }
+        }
+
+
 
         // GET: Plantio/Edit/5
         [Authorize]

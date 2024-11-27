@@ -168,6 +168,67 @@
             crossorigin="anonymous">
     </script>
 
+
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Botão "Colher e Estocar"
+            const btnColherEstocar = document.getElementById('anc-estoque-plantacao');
+
+            if (btnColherEstocar) {
+                btnColherEstocar.addEventListener('click', async (event) => {
+                    // Previne o comportamento padrão (caso o botão esteja dentro de um formulário)
+                    event.preventDefault();
+
+                    // Obtém todos os checkboxes marcados
+                    const selectedIds = [];
+                    const checkboxes = document.querySelectorAll('.select-plantacao');
+                    checkboxes.forEach((checkbox) => {
+                        if (checkbox.checked) {
+                            selectedIds.push(parseInt(checkbox.value));
+                        }
+                    });
+
+                    // Verifica se algum item foi selecionado
+                    if (selectedIds.length === 0) {
+                        alert("Nenhum item selecionado. Selecione ao menos um item para colher e estocar.");
+                        return;
+                    }
+
+                    // Envia os IDs selecionados para o controller via AJAX
+                    try {
+                        // Configura o corpo da requisição
+                        const response = await fetch('@Url.Action("Colher", "Plantio")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() // Envia o token anti-forgery
+                            },
+                            body: JSON.stringify({ plantiosIds: selectedIds }) // Envia o array de IDs
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Caso o sucesso, exibe uma mensagem
+                            alert(result.message);
+                            location.reload(); // Recarrega a página após o sucesso
+                        } else {
+                            // Caso falha, exibe a mensagem de erro
+                            alert(result.message);
+                        }
+
+                    } catch (error) {
+                        console.error('Erro:', error);
+                        alert('Ocorreu um erro ao tentar colher e estocar os produtos.');
+                    }
+                });
+            }
+        });
+    </script>
+
+
+
+
     <script>
         // Inicializar tooltips
         document.addEventListener("DOMContentLoaded", () => {
