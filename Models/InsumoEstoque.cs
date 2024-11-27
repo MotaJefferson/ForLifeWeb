@@ -35,6 +35,9 @@ namespace ForLifeWeb.Models
         public DateTime? data_baixa { get; set; }
 
         [DataType(DataType.Date)]
+        public DateTime? data_vencimento_estimado { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime? data_registro { get; set; } = DateTime.Now;
 
         [Required]

@@ -14,9 +14,8 @@ namespace ForLifeWeb.Models
         [Required]
         public int insumo_id { get; set; }
 
-        [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Preço unitário deve ser maior que zero.")]
-        public decimal preco_unitario { get; set; }
+        [Range(0.01, double.MaxValue)]
+        public decimal? preco_unitario { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quantidade deve ser maior que zero.")]

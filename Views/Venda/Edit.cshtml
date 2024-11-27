@@ -1,69 +1,320 @@
 ﻿@model ForLifeWeb.Models.Venda
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Venda";
 }
 
-<h1>Edit</h1>
+<body class="fundo">
 
-<h4>Venda</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id_venda" />
-            <div class="form-group">
-                <label asp-for="produto_id" class="control-label"></label>
-                <select asp-for="produto_id" class="form-control" asp-items="ViewBag.produto_id"></select>
-                <span asp-validation-for="produto_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="cliente_id" class="control-label"></label>
-                <select asp-for="cliente_id" class="form-control" asp-items="ViewBag.cliente_id"></select>
-                <span asp-validation-for="cliente_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="numero_venda" class="control-label"></label>
-                <input asp-for="numero_venda" class="form-control" />
-                <span asp-validation-for="numero_venda" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="data_registro" class="control-label"></label>
-                <input asp-for="data_registro" class="form-control" />
-                <span asp-validation-for="data_registro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="quantidade_venda" class="control-label"></label>
-                <input asp-for="quantidade_venda" class="form-control" />
-                <span asp-validation-for="quantidade_venda" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="data_venda" class="control-label"></label>
-                <input asp-for="data_venda" class="form-control" />
-                <span asp-validation-for="data_venda" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="preco_unitario" class="control-label"></label>
-                <input asp-for="preco_unitario" class="form-control" />
-                <span asp-validation-for="preco_unitario" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="valor_venda" class="control-label"></label>
-                <input asp-for="valor_venda" class="form-control" />
-                <span asp-validation-for="valor_venda" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <main>
+        <div class="container-sm px-4 px-lg-5">
+            <h1 class="mt-5 mb-3 text-left ">
+                <span class="titulo_inicio">Ve</span><span class="titulo_meio">nd</span><span class="titulo_fim">as</span>
+            </h1>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+            <form asp-action="Edit">
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+                @Html.AntiForgeryToken()
+
+                <!-- Campo oculto pra passar o ID -->
+                <input type="hidden" value="@Model.id_venda" name="id_venda" />
+
+                <!-- Cabeçalho Vendas -->
+                <div class="row">
+                    <h5 class="text-left text-success">Informações de Venda</h5>
+                </div>
+
+                <div class="row">
+
+                    <!-- Linha com Código Cliente -->
+                    <div class="row">
+                        <div class="col-md-2 col-12">
+                            <div class="form-floating mb-4">
+                                <input asp-for="cliente_id" type="number" step="1" min="1" class="form-control" id="codigo_cliente"
+                                       placeholder="Código Cliente" name="cliente_id" required>
+                                <label for="codigo_cliente">Código Cliente</label>
+                            </div>
+                        </div>
+
+                        <!-- Nome do cliente -->
+                        <div class="col-md-10 col-12">
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control" id="nome_cliente" placeholder="Nome Cliente"
+                                       disabled>
+                                <label for="nome_cliente">Nome do Cliente</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <!-- Linha com Código Produto -->
+                    <div class="row">
+                        <div class="col-md-2 col-12">
+                            <div class="form-floating mb-4">
+                                <input asp-for="produto_id" type="number" step="1" min="1" class="form-control" id="codigo_produto"
+                                       placeholder="Código Produto" name="produto_id" required>
+                                <label for="codigo_produto">Código Produto</label>
+                            </div>
+                        </div>
+
+                        <!-- Nome do produto -->
+                        <div class="col-md-10 col-12">
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control" id="nome_produto" placeholder="Nome Produto"
+                                       disabled>
+                                <label for="nome_produto">Nome do Produto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabeçalho forma de pagamento -->
+                <div class="row">
+                    <h5 class=" text-left text-success ">Dados de Pagamento</h5>
+                </div>
+
+                <div class="row">                    
+                    <!--Campo input para informar quantidade de venda-->
+
+                    <div class="col-md-2 col-12">
+                        <div class="form-floating mb-4">
+                            <input asp-for="quantidade_venda" type="number" step="1" min="1" class="form-control" id="quantidade_venda"
+                                   placeholder="Quantidade Venda" name="quantidade_venda" required>
+                            <label for="quantidade_venda">Quantidade Venda</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-12">
+                        <div class="form-floating mb-4">
+                            <input asp-for="preco_unitario" type="number" step="1" min="1" class="form-control" id="valor_unitario_venda"
+                                   placeholder="R$ Valor Unit." name="preco_unitario" oninput="calcular()" required>
+                            <label for="quantidade_venda">Valor Unitário (R$)</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-12">
+                        <div class="form-floating mb-4">
+                            <input asp-for="valor_venda" type="number" step="1" min="1" class="form-control" id="valor_total_venda"
+                                   placeholder="R$ Valor Total" name="valor_venda" oninput="calcular()" readonly required>
+                            <label for="quantidade_venda">Valor Total (R$)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Radio butons para opções de formas de pagamento: Cartão, Dinheiro, Pix-->
+                <div class="row pt-2">
+                    <div class="col-md-1 col-12 ">
+                        <input asp-for="forma_pagamento" type="radio" class="btn-check" name="forma_pagamento" id="btn_forma_pagamento_cartao" autocomplete="off"
+                               value="Cartão" checked>
+                        <label class="btn" for="btn_forma_pagamento_cartao">Cartão</label>
+                    </div>
+                    <div class="col-md-1 col-12">
+                        <input asp-for="forma_pagamento" type="radio" class="btn-check" name="forma_pagamento" id="btn_forma_pagamento_dinheiro" autocomplete="off" value="Dinheiro">
+                        <label class="btn" for="btn_forma_pagamento_dinheiro">Dinheiro</label>
+                    </div>
+                    <div class="col-md-1 col-12 pb-4">
+                        <input asp-for="forma_pagamento" type="radio" class="btn-check" name="forma_pagamento" id="btn_forma_pagamento_pix" autocomplete="off" value="Pix">
+                        <label class="btn" for="btn_forma_pagamento_pix">Pix</label>
+                    </div>
+                </div>
+
+                <!-- Botão Salvar -->
+                <div class="row pt-1 justify-content-left">
+                    <div class="col-md-3 col-8">
+                        <button type="submit" class="btn btn-success mt-3 w-100" id="salvar-venda">Salvar</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
+
+        <script>
+            var im = new Inputmask("R$ 9{1,}.99", {placeholder: " "});
+            im.mask(document.getElementById("valor_unitario_venda"));            
+            im.mask(document.getElementById("valor_total_venda"));
+        </script>
+
+
+        <script>
+            function calcular() {
+                // Obtém os valores dos inputs
+                const valor1 = parseFloat(document.getElementById("quantidade_venda").value) || 0;
+                const valor2 = parseFloat(document.getElementById("valor_unitario_venda").value) || 0;
+
+                // Realiza o cálculo
+                const resultado = valor1 * valor2;
+
+                // Exibe o resultado no campo de saída
+                document.getElementById("valor_total_venda").value = resultado;
+            }
+        </script>
+
+        <script> //Validar campos negativos
+            document.getElementById('codigo_cliente').addEventListener('input', (event) => {
+                const input = event.target;
+                if (input.value < 0) {
+                                input.value = ''; // Limpa o valor negativo
+                    alert('Por favor, insira um valor maior ou igual a 0');
+                }
+            });
+
+            document.getElementById('codigo_produto').addEventListener('input', (event) => {
+                const input = event.target;
+                if (input.value < 0) {
+                                input.value = ''; // Limpa o valor negativo
+                    alert('Por favor, insira um valor maior ou igual a 0');
+                }
+            });
+           
+        </script>
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', () => {
+            const codigoClienteField = document.getElementById('codigo_cliente');
+            const nomeFornecedorField = document.getElementById('nome_cliente');
+
+            // Limpa o campo de nome do fornecedor ao carregar
+            nomeFornecedorField.value = "";
+
+            // Verifica se já existe um valor no campo 'codigo_cliente' ao carregar a página
+            const codigo = codigoClienteField.value.trim();
+
+            if (codigo === "") return;
+
+                async function buscarNomeCliente(codigo) {
+                    try {
+                        const response = await fetch(`/Cliente/ObterNomeCliente?codigoCliente=${codigo}`);
+
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar o cliente.");
+                    }
+
+                    const nome = await response.text();
+                    nomeFornecedorField.value = nome || "Cliente não encontrado";
+                } catch (error) {
+                    console.error(error.message);
+                    nomeFornecedorField.value = "Erro ao buscar o cliente";
+                }
+                    }
+
+                    // Chama a função de busca automaticamente, caso haja um código cliente
+                    buscarNomeCliente(codigo);
+
+                    // Adiciona o evento de input como no código original
+                    codigoClienteField.addEventListener('input', async (event) => {
+                        const codigo = event.target.value.trim();
+                        nomeFornecedorField.value = "";
+
+                        if (codigo === "") return;
+
+                        await buscarNomeCliente(codigo);
+                    });
+                });
+
+        </script>
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const codigoProdutoField = document.getElementById('codigo_produto');
+                const nomeInsumoField = document.getElementById('nome_produto');
+
+                // Limpa o campo de nome do insumo ao carregar
+                nomeInsumoField.value = "";
+
+                // Verifica se já existe um valor no campo 'codigo_produto' ao carregar a página
+                const codigo = codigoProdutoField.value.trim();
+
+                if (codigo !== "") {
+                    buscarNomeProduto(codigo); // Chama a função se houver valor
+                }
+
+                // Função para buscar o nome do produto
+                async function buscarNomeProduto(codigo) {
+                    try {
+                        const response = await fetch(`/Produto/ObterNomeProduto?codigoProduto=${codigo}`);
+
+                        if (!response.ok) {
+                            throw new Error("Erro ao buscar o produto.");
+                        }
+
+                        const nome = await response.text();
+                        nomeInsumoField.value = nome || "Produto não encontrado";
+                    } catch (error) {
+                        console.error(error.message);
+                        nomeInsumoField.value = "Erro ao buscar o produto";
+                    }
+                }
+
+                // Adiciona o evento de input para busca dinâmica
+                codigoProdutoField.addEventListener('input', async (event) => {
+                    const codigo = event.target.value.trim();
+                    nomeInsumoField.value = "";
+
+                    if (codigo === "") return;
+
+                    await buscarNomeProduto(codigo);
+                });
+            });
+
+        </script>
+
+        @* <script>
+        document.getElementById('codigo_produto').addEventListener('input', async (event) => {
+            const codigo = event.target.value.trim();
+            const nomeInsumoField = document.getElementById('nome_produto');
+
+            nomeInsumoField.value = "";
+
+            if (codigo === "") return;
+
+            try {
+                const response = await fetch(`/Produto/ObterNomeProduto?codigoProduto=${codigo}`);
+
+                if (!response.ok) {
+                    throw new Error("Erro ao buscar o produto.");
+                }
+
+                const nome = await response.text();
+                nomeInsumoField.value = nome || "Produto não encontrado";
+            } catch (error) {
+                console.error(error.message);
+                nomeInsumoField.value = "Erro ao buscar o produto";
+            }
+        });
+
+        document.getElementById('codigo_cliente').addEventListener('input', async (event) => {
+            const codigo = event.target.value.trim();
+            const nomeFornecedorField = document.getElementById('nome_cliente');
+
+            nomeFornecedorField.value = "";
+
+            if (codigo === "") return;
+
+            try {
+                const response = await fetch(`/Cliente/ObterNomeCliente?codigoCliente=${codigo}`);
+
+                if (!response.ok) {
+                    throw new Error("Erro ao buscar o cliente.");
+                }
+
+                const nome = await response.text();
+                nomeFornecedorField.value = nome || "Cliente não encontrado";
+            } catch (error) {
+                console.error(error.message);
+                nomeFornecedorField.value = "Erro ao buscar o cliente";
+            }
+        });
+    </script> *@
+
+
+    </main>
+
+</body>

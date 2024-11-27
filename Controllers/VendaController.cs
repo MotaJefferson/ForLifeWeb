@@ -22,10 +22,57 @@ namespace ForLifeWeb.Controllers
 
         // GET: Venda
         [Authorize]
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            return View(await _context.Vendas.ToListAsync());
+            var query = from venda in _context.Vendas
+                        join produto in _context.Produtos
+                        on venda.produto_id equals produto.id_produto
+                        join cliente in _context.Clientes
+                        on venda.cliente_id equals cliente.id_cliente
+                        select new
+                        {
+                            Venda = venda,
+                            Produto = produto,
+                            Cliente = cliente
+                        };
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x =>
+                    x.Cliente.nome.Contains(searchTerm) ||
+                    x.Venda.id_venda.ToString().Contains(searchTerm) ||
+                    x.Produto.nome.Contains(searchTerm) ||
+                    x.Venda.quantidade_venda.ToString().Contains(searchTerm));
+            }
+
+            var model = query
+                .AsEnumerable()
+                .Select(x => (Venda: x.Venda, Produto: x.Produto, Cliente: x.Cliente))
+                .ToList();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var tableRows = model.Select(item => $@"
+                <tr class='venda-row'>
+                    <td><input type='checkbox' class='select-venda' value='{item.Venda.id_venda}'></td>
+                    <td>{item.Venda.id_venda}</td>
+                    <td>{item.Cliente.nome}</td>
+                    <td>{item.Produto.nome}</td>
+                    <td>{item.Venda.quantidade_venda}</td>
+                    <td>{item.Venda.preco_unitario.ToString("C2")}</td>
+                    <td>{item.Venda.valor_venda.ToString("C2")}</td>
+                    <td>{item.Venda.forma_pagamento}</td>
+                    <td><span class='data-mask'>{item.Venda.data_venda:dd/MM/yyyy}</span></td>
+                </tr>
+                ");
+
+                return Content(string.Join("", tableRows), "text/html");
+            }
+
+            return View(model);
         }
+
 
         // GET: Venda/Details/5
         [Authorize]
@@ -54,15 +101,14 @@ namespace ForLifeWeb.Controllers
         }
 
         // POST: Venda/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("id_venda,produto_id,cliente_id,numero_venda,data_registro,quantidade_venda,data_venda,preco_unitario,valor_venda")] Venda venda)
+        public async Task<IActionResult> Create([Bind("id_venda,produto_id,cliente_id,data_registro,quantidade_venda,data_venda,preco_unitario,valor_venda,forma_pagamento")] Venda venda)
         {
             if (ModelState.IsValid)
             {
+                venda.data_venda = DateTime.Now;
                 _context.Add(venda);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -74,6 +120,8 @@ namespace ForLifeWeb.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
+
+            Console.WriteLine(id);
             if (id == null)
             {
                 return NotFound();

@@ -20,6 +20,10 @@ namespace ForLifeWeb.Data
         public DbSet<ProdutoEstoque> ProdutoEstoque { get; set; }
         public DbSet<InsumoEstoque> InsumoEstoque { get; set; }
 
+        //Views
+        public DbSet<MovimentoInsumoEstoque> MovimentoInsumoEstoqueW { get; set; }
+        public DbSet<MovimentoProdutoEstoque> MovimentoProdutoEstoqueW { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -46,7 +50,12 @@ namespace ForLifeWeb.Data
                 .Property(u => u.data_cadastro)
                 .HasDefaultValueSql("GETDATE()");
 
-
+            modelBuilder.Entity<MovimentoInsumoEstoque>()
+                .HasNoKey()
+                .ToView("MovimentoInsumoEstoqueW");
+            modelBuilder.Entity<MovimentoProdutoEstoque>()
+                .HasNoKey()
+                .ToView("MovimentoProdutoEstoqueW");
 
             // Relacionamentos e DeleteBehavior
             modelBuilder.Entity<InsumoCompra>()

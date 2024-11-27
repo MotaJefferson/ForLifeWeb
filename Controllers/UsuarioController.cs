@@ -22,25 +22,39 @@ namespace ForLifeWeb.Controllers
 
         // GET: Usuario
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            var usuarios = _context.Usuarios
-                .Select(u => new Usuario
-                {
-                    nome = u.nome,
-                    cargo = u.cargo,
-                    cpf = u.cpf,
-                    cod_usuario = u.cod_usuario,
-                    ativo = u.ativo
-                })
-                .ToList();
+            var query = _context.Usuarios.AsQueryable();
 
-            foreach (var usuario in usuarios)
+            // Se houver um termo de pesquisa, aplica o filtro
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                usuario.cpf = FormatCpf(usuario.cpf);  
+                query = query.Where(x =>
+                    x.nome.Contains(searchTerm) ||
+                    x.cpf.Contains(searchTerm) ||
+                    x.cargo.Contains(searchTerm) ||
+                    x.cod_usuario.Contains(searchTerm));
             }
 
-            return View(usuarios);
+            var model = await query.ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var tableRows = model.Select(item => $@"
+                    <tr class='produto-row'>
+                        <td><input type='checkbox' class='select-usuario' value='{item.id_usuario}'></td>
+                        <td>{item.id_usuario}</td>
+                        <td>{item.nome}</td>
+                        <td>{item.cpf}</td>
+                        <td>{item.cod_usuario}</td>
+                        <td>{item.cargo}</td>
+                    </tr>
+                ");
+
+                return Content(string.Join("", tableRows), "text/html");
+            }
+
+            return View(model);
         }
 
         // GET: Usuario/Details/5

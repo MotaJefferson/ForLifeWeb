@@ -21,9 +21,38 @@ namespace ForLifeWeb.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            return View(await _context.Clientes.ToListAsync());
+            var query = _context.Clientes.AsQueryable();
+
+            // Se houver um termo de pesquisa, aplica o filtro
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x =>
+                    x.nome.Contains(searchTerm) ||
+                    x.cpf.Contains(searchTerm) ||
+                    x.telefone.Contains(searchTerm));
+            }
+
+            var model = await query.ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var tableRows = model.Select(item => $@"
+                    <tr class='produto-row'>
+                        <td><input type='checkbox' class='select-cliente' value='{item.id_cliente}'></td>
+                        <td>{item.id_cliente}</td>
+                        <td>{item.nome}</td>
+                        <td>{item.cpf}</td>
+                        <td>{item.telefone}</td>
+                        <td>{item.observacoes}</td>
+                    </tr>
+                ");
+
+                return Content(string.Join("", tableRows), "text/html");
+            }
+
+            return View(model);
         }
 
         [Authorize]
@@ -88,10 +117,12 @@ namespace ForLifeWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("id_cliente,nome,telefone,cpf,endereco")] Cliente cliente)
+        public async Task<IActionResult> Edit(int id, [Bind("id_cliente,nome,telefone,cpf,observacoes,ativo")] Cliente cliente)
         {
+
             if (id != cliente.id_cliente)
             {
+                Console.WriteLine($"ID de URL: {id}, ID do Produto: {cliente.id_cliente}");
                 return NotFound();
             }
 
@@ -115,6 +146,7 @@ namespace ForLifeWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(cliente);
         }
 
@@ -151,6 +183,32 @@ namespace ForLifeWeb.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ObterNomeCliente(string codigoCliente)
+        {
+
+            if (string.IsNullOrWhiteSpace(codigoCliente))
+            {
+                return Content("");
+            }
+
+            var cliente = await _context.Clientes
+                .FirstOrDefaultAsync(i => i.id_cliente.ToString() == codigoCliente);
+
+            if (cliente == null)
+            {
+                return Content("");
+            }
+
+            var nomeDescricao = string.IsNullOrWhiteSpace(cliente.cpf)
+                ? cliente.nome
+                : $"{cliente.nome} - {cliente.cpf}";
+
+            return Content(nomeDescricao);
+
         }
 
         private bool ClienteExists(int id)

@@ -1,59 +1,223 @@
 ﻿@model ForLifeWeb.Models.Usuario
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Edit</h1>
 
-<h4>Usuario</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id_usuario" />
-            <div class="form-group">
-                <label asp-for="nome" class="control-label"></label>
-                <input asp-for="nome" class="form-control" />
-                <span asp-validation-for="nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="cargo" class="control-label"></label>
-                <input asp-for="cargo" class="form-control" />
-                <span asp-validation-for="cargo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="cpf" class="control-label"></label>
-                <input asp-for="cpf" class="form-control" />
-                <span asp-validation-for="cpf" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="cod_usuario" class="control-label"></label>
-                <input asp-for="cod_usuario" class="form-control" />
-                <span asp-validation-for="cod_usuario" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="senha" class="control-label"></label>
-                <input asp-for="senha" class="form-control" />
-                <span asp-validation-for="senha" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="data_cadastro" class="control-label"></label>
-                <input asp-for="data_cadastro" class="form-control" />
-                <span asp-validation-for="data_cadastro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+<body class="fundo">
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <main>
+        <div class="container">
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            <!--Título Cadastro de usuário-->
+            <h1 class="mt-5 mb-5">
+                <span class="titulo_inicio">Cadastro</span><span class="titulo_meio">
+                    de
+                    usu
+                </span><span class="titulo_fim">ário</span>
+            </h1>
+
+
+            <div class="d-flex justify-content-center align-items-center">
+
+                <form asp-action="Edit" class="w-100">
+
+                    @Html.AntiForgeryToken()
+
+                    <!--Campo oculto-->
+                    <input type="hidden" value="@Model.id_usuario" name="id_usuario" />
+
+                    <!--Seleção de cadastro ativo ou inativo-->
+
+                    <input asp-for="ativo" type="radio" class="btn-check " name="ativo" value="true" id="radio-usuario-ativo" autocomplete="off">
+                    <label class="btn" for="radio-usuario-ativo">Ativo</label>
+
+                    <input asp-for="ativo" type="radio" class="btn-check" name="ativo" value="false" id="radio-usuario-inativo" autocomplete="off">
+                    <label class="btn" for="radio-usuario-inativo">Inativo</label>
+
+                    <!--Campo nome completo-->
+                    <div class="form-floating mb-2 mt-3">
+                        <input asp-for="nome" type="text" class="form-control" name="nome" id="nomeCompleto_usuario" placeholder="Nome completo"
+                               required autofocus>
+                        <label for="nomeCompleto_usuario">Nome completo</label>
+                    </div>
+
+                    <!--Campo CPF-->
+                    <div class="form-floating mb-2">
+                        <input asp-for="cpf" type="text" class="form-control" name="cpf" id="cpf_usuario" placeholder="000.000.000-00"
+                               oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)" required>
+                        <label for="cnpj_usuario">CPF</label>
+                        <small id="cpfFeedback" class="text-danger"></small>
+                    </div>
+
+                    <!--Campo suspenso para selecionar o cargo-->
+                    <div class="form-floating mb-2">
+                        <label asp-for="cargo" class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+                        <select class="form-select" name="cargo" id="cargo">
+                            <option selected hidden>Selecione o cargo</option>
+                            <option values="Gestor">Gestor</option>
+                            <option values="Agricultor">Agricultor</option>
+                            <option values="Comercial">Comercial</option>
+                        </select>
+                        <label for="cargo">Tipo de Usuário</label>
+
+                        <!-- Botão de limpar (X) -->
+                        <button type="button" id="clearSelection" class="btn position-absolute"
+                                style="top: 50%; right: 40px; transform: translateY(-50%); display: none; padding: 0; border: none; background: none; color: black; font-size: 14px; line-height: 1;">
+                            &#x2715;
+                        </button>
+
+                    </div>
+
+                    <!--Campo definir o usuário-->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-2">
+                                <input asp-for="cod_usuario" type="text" name="cod_usuario" class="form-control" id="nomeUsuario_usuario"
+                                       placeholder="Usuario para Login" required>
+                                <label for="nomeUsuario_usuario">Usuário de Login</label>
+                            </div>
+                        </div>
+
+                        <!--Campo para definir senha-->
+                        <div class="col">
+                            <div class="form-floating mb-2">
+                                <input asp-for="senha" type="password" class="form-control" name="senha" id="senha_usuario" placeholder="Senha"
+                                       oninput="validarSenha(this)" required>
+                                <label for="senha_usuario">Senha</label>
+                                <small id="senhaFeedback" class="text-danger"></small> <!-- Mensagem de validação -->
+
+                                <button type="button" id="togglePassword" class="btn position-absolute end-0 top-50 translate-middle-y me-2" style="top: 50%;">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botão para envio do formulario -->
+                    <div class="row pt-3 justify-content-right">
+                        <div class="col-md-3 col-8">
+                            <button type="submit" class="btn btn-success mt-3 w-100"
+                                    id="btnSalvarCadUsuario">
+                                Salvar
+                            </button>
+                        </div>
+
+                        <!--Botão listar todos - deve direcionar para listagem_usuario-->
+                        <div class="col-md-3 col-8">
+                            <a asp-controller="Usuario" asp-action="index" id="btn-listartodos-usuario" class="btn btn-success mt-3 w-100">Listar todos</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        //Ocultar-Exibir senha
+               document.getElementById('togglePassword').addEventListener('click', function () {
+                   const passwordInput = document.getElementById('senha_usuario');
+                   const icon = this.querySelector('i');
+
+                   if (passwordInput.type === 'password') {
+                       passwordInput.type = 'text';
+                       icon.classList.remove('bi-eye');
+                       icon.classList.add('bi-eye-slash');
+                   } else {
+                       passwordInput.type = 'password';
+                       icon.classList.remove('bi-eye-slash');
+                       icon.classList.add('bi-eye');
+                   }
+               });
+    </script>
+
+
+    <script>
+        //Máscara para o CPF
+               function aplicarMascaraCPF(input) {
+                   let valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+                   if (valor.length > 11) valor = valor.slice(0, 11); // Limita a 11 dígitos
+                   valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
+                   valor = valor.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
+                   valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+                   input.value = valor; // Atualiza o valor no campo
+               }
+
+               //validação do CPF
+               function validarCPF(input) {
+                   const feedback = document.getElementById("cpfFeedback");
+                   const valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+                   if (valor.length < 11) {
+                       feedback.textContent = "O CPF deve conter 11 dígitos.";
+                       feedback.className = "text-danger"; // Texto vermelho
+                   } else if (/^(\d)\1+$/.test(valor)) { // Verifica se todos os números são iguais
+                       feedback.textContent = "O CPF não pode conter todos os números iguais.";
+                       feedback.className = "text-danger";
+                   } else {
+                       feedback.textContent = "CPF válido.";
+                       feedback.className = "text-success"; // Texto verde
+                   }
+               }
+
+               const selectElement = document.getElementById('tipoDeUsuario');
+               const clearButton = document.getElementById('clearSelection');
+
+               // Mostrar o botão "X" quando uma opção é selecionada
+                   selectElement.addEventListener('change', () => {
+                       if (selectElement.value !== '' && selectElement.value !== 'Selecione o tipo de insumo') {
+                           clearButton.style.display = 'inline-block';
+                       }
+                   });
+
+               // Limpar seleção ao clicar no botão "X"
+                   clearButton.addEventListener('click', () => {
+                       selectElement.value = '';
+                       clearButton.style.display = 'none';
+
+                       // Redefine o texto "Selecione o tipo de insumo"
+                       const placeholderOption = selectElement.querySelector('option[hidden]');
+                       placeholderOption.selected = true;
+                   });
+
+
+               //Validação de segurança da senha
+               function validarSenha(input) {
+                   const feedback = document.getElementById("senhaFeedback");
+                   const senha = input.value;
+
+                   // Exemplo de requisitos
+                   const comprimentoMinimo = 6; // Mínimo de 6 caracteres
+                   const contemNumero = /\d/; // Contém pelo menos um número
+                   const contemLetraMaiuscula = /[A-Z]/; // Contém pelo menos uma letra maiúscula
+                   const contemCaractereEspecial = /[@@$!%*?&#]/; // Pelo menos um caractere especial
+
+                   // Validação dinâmica
+                   if (senha.length < comprimentoMinimo) {
+                       feedback.textContent = "A senha deve ter pelo menos 6 caracteres.";
+                       feedback.className = "text-danger"; // Texto vermelho
+                   } else if (!contemNumero.test(senha)) {
+                       feedback.textContent = "A senha deve conter pelo menos um número.";
+                       feedback.className = "text-danger";
+                   } else if (!contemLetraMaiuscula.test(senha)) {
+                       feedback.textContent = "A senha deve conter pelo menos uma letra maiúscula.";
+                       feedback.className = "text-danger";
+                   } else if (!contemCaractereEspecial.test(senha)) {
+                       feedback.textContent = "A senha deve conter pelo menos um caractere especial.";
+                       feedback.className = "text-danger";
+                   } else {
+                       feedback.textContent = "Senha válida.";
+                       feedback.className = "text-success"; // Texto verde
+                   }
+               }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+</body>

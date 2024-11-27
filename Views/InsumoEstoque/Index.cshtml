@@ -1,7 +1,8 @@
-﻿@model IEnumerable<ForLifeWeb.Models.Insumo>
+﻿@model IEnumerable<MovimentoInsumoEstoque>
+
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Estoque";
 }
 
 <!DOCTYPE html>
@@ -12,14 +13,14 @@
     <main>
         <div class="container-sm px-4 px-lg-5">
             <h1 class="mt-5 mb-3 text-left ">
-                <span class="titulo_inicio">Lista</span> <span class="titulo_meio">de Insumos</span>
+                <span class="titulo_inicio">Estoque</span> <span class="titulo_meio">de Insumos</span>
             </h1>
 
             <!-- Formulário de Pesquisa -->
             <div class="input-group mb-4">
                 <input type="text" class="form-control" placeholder="Pesquisar Insumos" id="inp-pesquisa-estoqueInsumo"
                        aria-label="Pesquisar Insumos">
-                <button class="btn btn-success" type="button" id="btn-pesquisa-estoqueInsumo" data-action-url="@Url.Action("Index", "Insumo")">
+                <button class="btn btn-success" type="button" id="btn-pesquisa-estoqueInsumo" data-action-url="@Url.Action("Index", "InsumoEstoque")">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
@@ -30,7 +31,7 @@
                 <!-- Botão Cadastrar insumo -->
                 <div class="col-auto pt-2">
                     <a class="btn btn-success btn-lg text-center rounded-pill mb-1"
-                       data-bs-toggle="tooltip" title="Incluir/Editar Insumo">
+                       data-bs-toggle="tooltip" title="Cadastrar novo insumo">
                         <i class="bi bi-plus-lg"></i>
                         <i class="bi bi-pencil-fill px-2"></i>
                     </a>
@@ -39,7 +40,7 @@
                 <!-- Botão Descartar -->
                 <div class="col-auto pt-2">
                     <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
-                       title="Descartar Insumo" id="anc-descartar-estoqueInsumo">
+                       title="Descartar insumo" id="anc-descartar-estoqueInsumo">
                         <i class="bi bi-trash3-fill px-4"></i>
                     </a>
                 </div>
@@ -47,7 +48,7 @@
                 <!-- Botão Atualizar estoque -->
                 <div class="col-auto pt-2">
                     <a class="btn btn-success btn-lg text-center rounded-pill mb-1"
-                       data-bs-toggle="tooltip" title="Atualizar Insumos" id="anc-atualizar-estoqueInsumo">
+                       data-bs-toggle="tooltip" title="Atualizar estoque" id="anc-atualizar-estoqueInsumo">
                         <i class="bi bi-arrow-repeat px-4"></i>
                     </a>
                 </div>
@@ -55,7 +56,7 @@
                 <!-- Botão Relatório -->
                 <div class="col-auto pt-2">
                     <a class="btn btn-success btn-lg text-center rounded-pill mb-1" data-bs-toggle="tooltip"
-                       title="Visualizar Relatório" id="anc-relatorio-estoqueInsumo" onclick="gerarPDFSelecionados()">
+                       title="Visualizar relatório insumo" id="anc-relatorio-estoqueInsumo">
                         <i class="bi bi-clipboard2-check-fill px-4"></i>
                     </a>
                 </div>
@@ -66,36 +67,26 @@
                 <table class="table table-hover table-bordered text-center" id="tabela-estoque-insumo">
                     <thead class="table-success">
                         <tr>
-                            <th scope="col">
-                                <input type="checkbox" id="select-all" title="Selecionar todos">
-                            </th>
-                            <th scope="col">ID</th>
-                            <th scope="col">Nome</th>
-                            <th scope="col">Descricao</th>
-                            <th scope="col">Tipo</th>
+                            <th>ID Movimento</th>
+                            <th>Nome</th>
+                            <th>Descrição do Movimento</th>
+                            <th>Quantidade Anterior</th>
+                            <th>Quantidade Movimento</th>
+                            <th>Quantidade Atual</th>
+                            <th>Data Registro</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <!-- Coluna do checkbox -->
-                                <td>
-                                    <input type="checkbox" class="select-produto" value="@item.id_insumo">
-                                </td>
-                                <!-- Demais colunas -->
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.id_insumo)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.nome)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.descricao)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.tipo)
-                                </td>
+                                <td>@item.idMovimentoProduto</td>
+                                <td>@item.nome</td>
+                                <td>@item.descrMovimento</td>
+                                <td>@item.quantidade_anterior</td>
+                                <td>@item.quantidadeMovimento</td>
+                                <td>@item.quantidade_atual</td>
+                                <td>@item.data_registro</td>
                             </tr>
                         }
                     </tbody>
@@ -104,13 +95,6 @@
         </div>
     </main>
 
-    <script>
-    // Inicializar tooltips
-    document.addEventListener("DOMContentLoaded", () => {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-    });
-    </script>
 
     <script>
         // Seleção de checkboxes
@@ -213,31 +197,32 @@
         });
     </script>
 
-    <script> // Botão incluir/editar
-        document.addEventListener('DOMContentLoaded', () => {
-            const btnCadastrarInsumo = document.querySelector('[title="Cadastrar novo insumo"]');
-            const selectCheckboxes = document.querySelectorAll('.select-produto');
+    <script>
+        // Botão incluir/editar
+               document.addEventListener('DOMContentLoaded', () => {
+                   const btnCadastrarInsumo = document.querySelector('[title="Cadastrar novo insumo"]');
+                   const selectCheckboxes = document.querySelectorAll('.select-produto');
 
-            if (btnCadastrarInsumo) {
-                btnCadastrarInsumo.addEventListener('click', () => {
-                    const selectedIds = [];
-                    selectCheckboxes.forEach((checkbox) => {
-                        if (checkbox.checked) {
-                            selectedIds.push(parseInt(checkbox.value));
-                        }
-                    });
+                   if (btnCadastrarInsumo) {
+                       btnCadastrarInsumo.addEventListener('click', () => {
+                           const selectedIds = [];
+                           selectCheckboxes.forEach((checkbox) => {
+                               if (checkbox.checked) {
+                                   selectedIds.push(parseInt(checkbox.value));
+                               }
+                           });
 
-                    // Envia os IDs selecionados para o controlador
-                    if (selectedIds.length === 0) {
-                        window.location.href = '@Url.Action("Create", "Insumo")';
-                    } else if (selectedIds.length === 1) {
-                        window.location.href = `@Url.Action("Edit", "Insumo", new { id = "__id__" })`.replace("__id__", selectedIds[0]);
-                    } else {
-                        alert('Selecione apenas um insumo para edição.');
-                    }
-                });
-            }
-        });
+                           // Envia os IDs selecionados para o controlador
+                           if (selectedIds.length === 0) {
+                               window.location.href = '@Url.Action("Create", "Insumo")';
+                           } else if (selectedIds.length === 1) {
+                               window.location.href = `@Url.Action("Edit", "Insumo", new { id = "__id__" })`.replace("__id__", selectedIds[0]);
+                           } else {
+                               alert('Selecione apenas um insumo para edição.');
+                           }
+                       });
+                   }
+               });
     </script>
 
 
@@ -272,10 +257,13 @@
                 const novaLinha = document.createElement("tr");
                 if (vencido) novaLinha.classList.add("vencido");
                 novaLinha.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.Insumo}</td>
-                    <td>${item.quantidade}</td>
-                    <td>${dataVencimentoFormatada}</td>
+                    <td>${item.idMovimentoProduto}</td>
+                    <td>${item.nome}</td>
+                    <td>${item.descrMovimento}</td>
+                    <td>${quantidade_anterior}</td>
+                    <td>${quantidadeMovimento}</td>
+                    <td>${quantidade_atual}</td>
+                    <td>${data_registro}</td>
                 `;
                 tabela.appendChild(novaLinha);
             });
@@ -294,12 +282,11 @@
 
     <script>
         // Função para gerar o PDF com logo, título e tabela formatada
-        function gerarPDFSelecionados() {
-            const checkboxes = document.querySelectorAll('.select-produto:checked'); // Apenas checkboxes marcados
-            const selectedRows = Array.from(checkboxes).map(cb => cb.closest('tr')); // Obter as linhas correspondentes
+        function gerarPDF() {
+            const rows = document.querySelectorAll('#tabela-estoque-insumo tbody tr'); // Obter todas as linhas da tabela
 
-            if (selectedRows.length === 0) {
-                alert("Por favor, selecione ao menos uma linha para gerar o relatório.");
+            if (rows.length === 0) {
+                alert("Não há dados para gerar o relatório.");
                 return;
             }
 
@@ -307,56 +294,72 @@
             const tempContainer = document.createElement('div');
             tempContainer.style.padding = '20px'; // Adicionar margem ao conteúdo
             tempContainer.innerHTML = `
-                <div style="display: flex; align-items: center; margin-bottom: 20px;">
-                    <img src="/assets/logo_forlife.png" alt="Logo ForLife" style="height: 50px; margin-right: 15px;">
-                    <h1 style="text-align: left; font-family: Arial, sans-serif; margin: 0;">
-                        Lista de Insumos
-                    </h1>
-                </div>
-                <table border="1" style="
-                    width: 100%;
-                    text-align: center;
-                    border-collapse: collapse;
-                    font-family: "Archivo Black", sans-serif;
-                    margin-top: 20px;
-                    border-spacing: 0;">
-                    <thead style="background-color: #d4edda; font-weight: bold; border-bottom: 2px solid #000;">
-                        <tr>
-                            <th style="padding: 8px; border-bottom: 1px solid #000;">ID</th>
-                            <th style="padding: 8px; border-bottom: 1px solid #000;">Nome</th>
-                            <th style="padding: 8px; border-bottom: 1px solid #000;">Descrição</th>
-                            <th style="padding: 8px; border-bottom: 1px solid #000;">Tipo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${selectedRows.map(row => {
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <img src="/assets/logo_forlife.png" alt="Logo ForLife" style="height: 40px; margin-right: 10px;">
+                        <h1 style="font-size: 18px; font-family: Arial, sans-serif; margin: 0;">
+                            Relatório de Estoque de Insumos
+                        </h1>
+                    </div>
+                    <table border="1" style="
+                        width: 100%;
+                        text-align: center;
+                        border-collapse: collapse;
+                        font-family: 'Arial', sans-serif;
+                        font-size: 12px;
+                        margin-top: 15px;
+                        border-spacing: 0;">
+                        <thead style="background-color: #d4edda; font-weight: bold; border-bottom: 2px solid #000;">
+                            <tr>
+                                <th style="padding: 6px; border-bottom: 1px solid #000;">ID Movimento</th>
+                                <th style="padding: 6px; border-bottom: 1px solid #000;">Nome</th>
+                                <th style="padding: 6px; border-bottom: 1px solid #000;">Descrição do Movimento</th>
+                                <th style="padding: 6px; border-bottom: 1px solid #000;">Quantidade Anterior</th>
+                                <th style="padding: 6px; border-bottom: 1px solid #000;">Quantidade Movimento</th>
+                                <th style="padding: 6px; border-bottom: 1px solid #000;">Quantidade Atual</th>
+                                <th style="padding: 6px; border-bottom: 1px solid #000;">Data Registro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Array.from(rows).map(row => {
                 const cells = row.querySelectorAll('td');
                 return `
                                 <tr>
-                                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${cells[1].textContent}</td>
-                                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${cells[2].textContent}</td>
-                                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${cells[3].textContent}</td>
-                                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${cells[4].textContent}</td>
+                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[0].textContent}</td>
+                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[1].textContent}</td>
+                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[2].textContent}</td>
+                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[3].textContent}</td>
+                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[4].textContent}</td>
+                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[5].textContent}</td>
+                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[6].textContent}</td>
                                 </tr>
                             `;
             }).join('')}
-                    </tbody>
-                </table>
-            `;
+                        </tbody>
+                    </table>
+                `;
 
             const options = {
                 margin: 10, // Margem do PDF (em mm)
-                filename: 'lista_de_insumos_selecionados.pdf',
+                filename: 'relatorio_estoque_insumos.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
 
-            // Gerar o PDF com o conteúdo filtrado
+            // Gerar o PDF com o conteúdo da tabela inteira
             html2pdf().from(tempContainer).set(options).save();
         }
 
+        // Adicionar evento ao botão de relatório
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnRelatorio = document.getElementById('anc-relatorio-estoqueInsumo');
+            if (btnRelatorio) {
+                btnRelatorio.addEventListener('click', gerarPDF);
+            }
+        });
     </script>
+
+
 
 </body>
 

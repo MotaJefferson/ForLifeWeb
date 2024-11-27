@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ForLifeWeb.Data;
 using ForLifeWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
 
 namespace ForLifeWeb.Controllers
 {
@@ -22,65 +23,126 @@ namespace ForLifeWeb.Controllers
 
         // GET: Plantio
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            var dados = _context.Plantio
-                .Join(
-                    _context.Produtos,
-                    plantio => plantio.produto_id,
-                    produto => produto.id_produto,
-                    (plantio, produto) => new {Plantio = plantio, Produto = produto}
-                )
-                .Where(result => result.Plantio.data_baixa == null)
+            var query = from plantio in _context.Plantio
+                        join produto in _context.Produtos
+                        on plantio.produto_id equals produto.id_produto
+                        select new
+                        {
+                            Plantio = plantio,
+                            Produto = produto
+                        };
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x =>
+                    x.Produto.nome.Contains(searchTerm) ||
+                    x.Plantio.id_plantio.ToString().Contains(searchTerm) ||
+                    x.Plantio.quantidade_plantio.ToString().Contains(searchTerm));
+            }
+
+            // Corrigido: Seleção com projeção correta
+            var model = query
                 .AsEnumerable()
-                .Select(result => (result.Plantio, result.Produto))
+                .Select(x => (Plantio: x.Plantio, Produto: x.Produto))
                 .ToList();
 
 
-            return View(dados);
-        }
-
-        // GET: Plantio/Details/5
-        [Authorize]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return NotFound();
+                var tableRows = model.Select(item => $@"
+                <tr class='produto-row'>
+                    <td><input type='checkbox' class='select-plantacao' value='{item.Plantio.id_plantio}'></td>
+                    <td>{item.Plantio.id_plantio}</td>
+                    <td>{item.Produto.nome}</td>
+                    <td>{item.Plantio.quantidade_plantio}</td>
+                    <td><span class='data-mask'>{item.Plantio.data_plantio:dd/MM/yyyy}</span></td>
+                    <td><span class='data-mask'>{item.Plantio.data_vencimento:dd/MM/yyyy}</span></td>
+                </tr>
+                ");
+
+                return Content(string.Join("", tableRows), "text/html");
             }
 
-            var plantio = await _context.Plantio
-                .FirstOrDefaultAsync(m => m.id_plantio == id);
-            if (plantio == null)
-            {
-                return NotFound();
-            }
-
-            return View(plantio);
+            return View(model);
         }
 
-        // GET: Plantio/Create
-        [Authorize]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Plantio/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: InsumoCompra/Plantar
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("id_plantio,insumo_id,produto_id,quantidade_plantio,data_plantio,data_colheita,data_vencimento,data_registro,data_baixa")] Plantio plantio)
+        public async Task<IActionResult> Plantar([Bind("insumo_id,produto_id,quantidade_plantio,data_plantio,data_vencimento,data_registro")] Plantio plantio)
         {
+            Console.WriteLine($"Insumo ID: {plantio.insumo_id}");
+            Console.WriteLine($"Produto ID: {plantio.produto_id}");
+            Console.WriteLine($"Quantidade Plantio: {plantio.quantidade_plantio}");
+
+            if (!ModelState.IsValid)
+            {
+                foreach (var entry in ModelState)
+                {
+                    Console.WriteLine($"Produto ID: {plantio.produto_id}");
+                    Console.WriteLine($"Quantidade Plantio: {plantio.quantidade_plantio}");
+
+                    Console.WriteLine($"{entry.Key}: {string.Join(", ", entry.Value.Errors.Select(e => e.ErrorMessage))}");
+                }
+            }
+
             if (ModelState.IsValid)
             {
+                
+                var insumoEstoque = await _context.InsumoEstoque.FirstOrDefaultAsync(i => i.insumo_id == plantio.insumo_id);
+                var produto = await _context.Produtos.FirstOrDefaultAsync(i => i.id_produto == plantio.produto_id);
+
+                
+                DateTime dataSaida = DateTime.Now;
+                DateTime dataVencimentoEstimado = dataSaida.AddDays(produto.periodo_vencimento);
+
+                //DADOS DO PLANTIO
+                plantio.data_plantio = DateTime.Now;
+                plantio.data_vencimento = dataVencimentoEstimado;
+
+                char tipoMovimento = 'S';
+                int quantidadeSaida = plantio.quantidade_plantio;
+
+                var parametros = new[]
+                {
+                    new SqlParameter("@TipoMovimento", tipoMovimento),
+                    new SqlParameter("@Quantidade", quantidadeSaida),
+                    new SqlParameter("@InsumoId", insumoEstoque.insumo_id),
+                    new SqlParameter("@FornecedorId", insumoEstoque.fornecedor_id),
+                    new SqlParameter("@DataEntrada", DBNull.Value),
+                    new SqlParameter("@DataVencimentoEstimado", dataVencimentoEstimado),
+                    new SqlParameter("@DataSaida", dataSaida)
+                };
+
+                try
+                {
+                    int resultado = await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC AtualizaEstoqueInsumoMovimento @TipoMovimento, @Quantidade, @InsumoId, @FornecedorId, @DataEntrada, @DataVencimentoEstimado, @DataSaida",
+                        parametros
+                    );
+
+                    if (resultado == 0)
+                    {
+                        return Json(new { success = false, message = "Falha ao atualizar o estoque no banco de dados." });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = $"Erro ao realizar operação: {ex.Message}" });
+                }
+
                 _context.Add(plantio);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Index", "Plantio");
             }
+
             return View(plantio);
+
+
         }
 
         // GET: Plantio/Edit/5

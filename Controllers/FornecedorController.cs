@@ -22,9 +22,39 @@ namespace ForLifeWeb.Controllers
 
         // GET: Fornecedor
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            return View(await _context.Fornecedores.ToListAsync());
+            var query = _context.Fornecedores.AsQueryable();
+
+            // Se houver um termo de pesquisa, aplica o filtro
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x =>
+                    x.nome.Contains(searchTerm) ||
+                    x.razao_social.Contains(searchTerm) ||
+                    x.cpf.Contains(searchTerm) ||
+                    x.cnpj.Contains(searchTerm));
+            }
+
+            var model = await query.ToListAsync();
+
+            if(Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var tableRows = model.Select(item => $@"
+                    <tr class='produto-row'>
+                        <td><input type='checkbox' class='select-cliente' value='{item.id_fornecedor}'></td>
+                        <td>{item.id_fornecedor}</td>
+                        <td>{(string.IsNullOrWhiteSpace(item.nome) ? item.razao_social : item.nome)}</td>
+                        <td>{(string.IsNullOrWhiteSpace(item.cpf) ? item.cnpj : item.cpf)}</td>
+                        <td>{item.telefone}</td>
+                        <td>{item.observacoes}</td>
+                    </tr>
+                ");
+
+                return Content(string.Join("", tableRows), "text/html");
+            }
+
+            return View(model);
         }
 
         // GET: Fornecedor/Details/5
@@ -101,7 +131,7 @@ namespace ForLifeWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("id_fornecedor,nome,cpf,razao_social,cnpj")] Fornecedor fornecedor)
+        public async Task<IActionResult> Edit(int id, [Bind("id_fornecedor,tipo,nome,razao_social,cpf,cnpj,telefone,observacoes,ativo")] Fornecedor fornecedor)
         {
             if (id != fornecedor.id_fornecedor)
             {
@@ -170,5 +200,32 @@ namespace ForLifeWeb.Controllers
         {
             return _context.Fornecedores.Any(e => e.id_fornecedor == id);
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ObterNomeFornecedor(string codigoFornecedor)
+        {
+
+            if (string.IsNullOrWhiteSpace(codigoFornecedor))
+            {
+                return Content("");
+            }
+
+            var fornecedor = await _context.Fornecedores
+                .FirstOrDefaultAsync(i => i.id_fornecedor.ToString() == codigoFornecedor);
+
+            if (fornecedor == null)
+            {
+                return Content("");
+            }
+
+            var nomeFornecedor = string.IsNullOrEmpty(fornecedor.razao_social)
+                ? $"{fornecedor.nome} | {fornecedor.cpf}"
+                : $"{fornecedor.razao_social} | {fornecedor.cnpj}";
+
+            return Content(nomeFornecedor);
+
+        }
+
     }
 }

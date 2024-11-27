@@ -24,37 +24,26 @@ namespace ForLifeWeb.Controllers
         [Authorize]
         public async Task<IActionResult> Index(string searchTerm)
         {
-            var query = from produto in _context.Produtos
-                        join estoque in _context.ProdutoEstoque
-                        on produto.id_produto equals estoque.produto_id into estoqueGroup
-                        from estoque in estoqueGroup.DefaultIfEmpty()
-                        where produto.ativo == true
-                        select new
-                        {
-                            Produto = produto,
-                            ProdutoEstoque = estoque
-                        };
+            var query = _context.Produtos.AsQueryable();
 
             // Se houver um termo de pesquisa, aplica o filtro
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query.Where(x => x.Produto.nome.Contains(searchTerm));
+                query = query.Where(x =>
+                    x.nome.Contains(searchTerm) ||
+                    x.descricao.Contains(searchTerm));
             }
 
-            var result = await query.ToListAsync();
-            var model = result.Select(x => (Produto: x.Produto, ProdutoEstoque: x.ProdutoEstoque)).ToList();
+            var model = await query.ToListAsync();
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                // Gerar o HTML diretamente no servidor e retornar
                 var tableRows = model.Select(item => $@"
                     <tr class='produto-row'>
-                        <td><input type='checkbox' class='select-cliente' value='{item.Produto.id_produto}'></td>
-                        <td>{(item.ProdutoEstoque != null ? item.ProdutoEstoque.id_estoque.ToString() : "-")}</td>
-                        <td class='produto-nome'>{item.Produto.nome}</td>
-                        <td>{item.ProdutoEstoque?.quantidade_atual ?? 0}</td>
-                        <td>{item.ProdutoEstoque?.data_colheita?.ToString("dd/MM/yyyy") ?? "-"}</td>
-                        <td>{item.ProdutoEstoque?.data_vencimento_estimado?.ToString("dd/MM/yyyy") ?? "-"}</td>
+                        <td><input type='checkbox' class='select-cliente' value='{item.id_produto}'></td>
+                        <td>{item.id_produto}</td>
+                        <td>{item.nome}</td>
+                        <td>{item.descricao}</td>
                     </tr>
                 ");
 
@@ -217,6 +206,32 @@ namespace ForLifeWeb.Controllers
             var nomeDescricao = string.IsNullOrWhiteSpace(insumo.descricao)
                 ? insumo.nome
                 : $"{insumo.nome} - {insumo.descricao}";
+
+            return Content(nomeDescricao);
+
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ObterNomeProduto(string codigoProduto)
+        {
+
+            if (string.IsNullOrWhiteSpace(codigoProduto))
+            {
+                return Content("");
+            }
+
+            var produto = await _context.Produtos
+                .FirstOrDefaultAsync(i => i.id_produto.ToString() == codigoProduto);
+
+            if (produto == null)
+            {
+                return Content("");
+            }
+
+            var nomeDescricao = string.IsNullOrWhiteSpace(produto.descricao)
+                ? produto.nome
+                : $"{produto.nome} - {produto.descricao}";
 
             return Content(nomeDescricao);
 

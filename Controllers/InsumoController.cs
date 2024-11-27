@@ -24,37 +24,30 @@ namespace ForLifeWeb.Controllers
         [Authorize]
         public async Task<IActionResult> Index(string searchTerm)
         {
-            var query = from insumo in _context.Insumos
-                        join estoque in _context.InsumoEstoque
-                        on insumo.id_insumo equals estoque.insumo_id into estoqueGroup
-                        from estoque in estoqueGroup.DefaultIfEmpty()
-                        where insumo.ativo == true
-                        select new
-                        {
-                            Insumo = insumo,
-                            InsumoEstoque = estoque
-                        };
+            var query = _context.Insumos.AsQueryable();
 
             // Se houver um termo de pesquisa, aplica o filtro
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query.Where(x => x.Insumo.nome.Contains(searchTerm));
+                query = query.Where(x =>
+                    x.nome.Contains(searchTerm) ||
+                    x.descricao.Contains(searchTerm) ||
+                    x.tipo.Contains(searchTerm));
             }
 
-            var result = await query.ToListAsync();
-            var model = result.Select(x => (Insumo: x.Insumo, InsumoEstoque: x.InsumoEstoque)).ToList();
+            var model = await query.ToListAsync();
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                // Gerar o HTML diretamente no servidor e retornar
                 var tableRows = model.Select(item => $@"
-            <tr class='insumo-row'>
-                <td><input type='checkbox' class='select-insumo' value='{item.Insumo.id_insumo}'></td>
-                <td>{(item.InsumoEstoque != null ? item.InsumoEstoque.id_estoque.ToString() : "-")}</td>
-                <td class='insumo-nome'>{item.Insumo.nome}</td>
-                <td>{item.InsumoEstoque?.quantidade_atual ?? 0}</td>
-            </tr>
-            ");
+                    <tr class='produto-row'>
+                        <td><input type='checkbox' class='select-cliente' value='{item.id_insumo}'></td>
+                        <td>{item.id_insumo}</td>
+                        <td>{item.nome}</td>
+                        <td>{item.descricao}</td>
+                        <td>{item.tipo}</td>
+                    </tr>
+                ");
 
                 return Content(string.Join("", tableRows), "text/html");
             }
@@ -194,6 +187,58 @@ namespace ForLifeWeb.Controllers
         private bool InsumoExists(int id)
         {
             return _context.Insumos.Any(e => e.id_insumo == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> Insert(int id, [Bind("insumo_id,fornecedor_id,quantidade")] InsumoCompra insumoCompra)
+        {
+            try
+            {
+                // Corrigindo a maneira de acessar os valores dos parâmetros no insumoEstoque
+                Console.WriteLine("Insumo: " + insumoCompra.insumo_id);
+                Console.WriteLine("Fornecedor: " + insumoCompra.fornecedor_id);
+                Console.WriteLine("Quantidade: " + insumoCompra.quantidade);
+
+                // Buscando o insumo no banco
+                var insumo = await _context.Insumos.FirstOrDefaultAsync(i => i.id_insumo == insumoCompra.insumo_id);
+
+                if (insumo == null)
+                {
+                    return NotFound("Insumo não encontrado.");
+                }
+
+                // Definindo as datas
+                DateTime dataEntrada = DateTime.Now;
+                DateTime dataVencimentoEstimado = dataEntrada.AddDays(insumo.periodo_vencimento ?? 0);
+
+                char tipoMovimento = 'E';
+                int? quantidadeEntrada = insumoCompra.quantidade;  
+
+                var parametros = new
+                {
+                    TipoMovimento = tipoMovimento,
+                    Quantidade = quantidadeEntrada,
+                    InsumoId = insumoCompra.insumo_id,
+                    FornecedorId = insumoCompra.fornecedor_id,
+                    DataEntrada = dataEntrada,
+                    DataVencimentoEstimado = dataVencimentoEstimado,
+                    DataSaida = (DateTime?)null
+                };
+
+                // Executando o procedimento armazenado
+                await _context.Database.ExecuteSqlRawAsync("EXEC AtualizaEstoqueInsumoMovimento @TipoMovimento, @Quantidade, @InsumoId, @FornecedorId, @DataEntrada, @DataVencimentoEstimado, @DataSaida", parametros);
+
+                // Redirecionando para a ação "Index"
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                // Tratamento de exceção
+                ViewBag.ErrorMessage = ex.Message;
+                return View();
+            }
         }
 
         [HttpPost]

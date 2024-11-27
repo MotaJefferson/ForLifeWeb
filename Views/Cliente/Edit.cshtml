@@ -1,7 +1,7 @@
 ﻿@model ForLifeWeb.Models.Cliente
 
 @{
-    ViewData["Title"] = "Cadastro";
+    ViewData["Title"] = "Editar";
 }
 
 <!DOCTYPE html>
@@ -9,18 +9,22 @@
 
 <body class="fundo">
 
-  <main>
+    <main>
         <div class="container">
-            <h1 class="mt-5 mb-5"><span class="titulo_inicio">Cadastro</span><span class="titulo_meio"> de
-                    cli</span><span class="titulo_fim">ente</span></h1>
+            <h1 class="mt-5 mb-5">
+                <span class="titulo_inicio">Cadastro</span><span class="titulo_meio">
+                    de
+                    cli
+                </span><span class="titulo_fim">ente</span>
+            </h1>
 
 
             <div class="d-flex justify-content-center align-items-center">
-
-                <form asp-action="Edit">
+                <form asp-action="Edit" class="w-100">
 
                     @Html.AntiForgeryToken()
 
+                    <!--Campo oculto-->
                     <input type="hidden" value="@Model.id_cliente" name="id_cliente" />
 
                     <!--Seleção de cadastro ativo ou inativo-->
@@ -34,7 +38,7 @@
                     <!-- Campo CPF -->
                     <div class="form-floating mb-2 mt-3" id="cpfField">
                         <input asp-for="cpf" type="text" class="form-control" id="cpf_cliente" name="cpf" placeholder="000.000.000-00"
-                            oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)" required>
+                               oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)" required>
                         <label for="cnpj_usuario">CPF</label>
                         <small id="cpfFeedback" class="text-danger"></small>
                     </div>
@@ -42,57 +46,61 @@
                     <!--Campo Nome-->
                     <div class="form-floating mb-2">
                         <input asp-for="nome" type="text" class="form-control" id="nome_cliente" name="nome" placeholder="Nome do cliente"
-                            required>
+                               required>
                         <label for="nome_cliente">Nome do cliente</label>
                     </div>
 
                     <!-- Campo Telefone -->
                     <div class="form-floating mb-2">
                         <input asp-for="telefone" type="text" class="form-control" id="telefone_cliente" name="telefone"
-                            placeholder="Telefone do cliente" maxlength="15" onkeyup="handlePhone(event)" required>
+                               placeholder="Telefone do cliente" maxlength="15" onkeyup="handlePhone(event)" required>
                         <label for="telefone_cliente">Telefone</label>
                     </div>
 
                     <!-- Campo Observação -->
                     <div class="form-floating mb-2">
                         <input asp-for="observacoes" type="text" class="form-control" id="observacao_cliente" name="observacoes"
-                            placeholder="Observações sobre o cliente">
+                               placeholder="Observações sobre o cliente">
                         <label for="observacao_cliente">Observação</label>
                     </div>
 
                     <!-- Botão para envio do formulario -->
                     <div class="row pt-3 justify-content-right">
                         <div class="col-md-3 col-8">
-                            <button type="submit" class="btn btn-success mt-3 w-100" id="btnSalvarCadCliente">Salvar</button>
+                            <button type="submit" class="btn btn-success mt-3 w-100"
+                                    id="btnSalvarCadCliente">
+                                Salvar
+                            </button>
                         </div>
                         <div class="col-md-3 col-8">
                             <a asp-controller="Cliente" asp-action="Index" id="btn-listartodos-cliente" class="btn btn-success mt-3 w-100">
                                 Listar todos
                             </a>
-                        </div>                   
-                    </div>                    
-                </form>                 
-            </div>             
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </main>
 
     <!-- Máscara de Telefone/Celular -->
     <script>
         const handlePhone = (event) => {
-          let input = event.target
-          input.value = phoneMask(input.value)
+            let input = event.target
+            input.value = phoneMask(input.value)
         }
 
         const phoneMask = (value) => {
-          if (!value) return ""
-          value = value.replace(/\D/g,'')
-          value = value.replace(/(\d{2})(\d)/,"($1) $2")
-          value = value.replace(/(\d)(\d{4})$/,"$1-$2")
-          return value
+            if (!value) return ""
+            value = value.replace(/\D/g, '')
+            value = value.replace(/(\d{2})(\d)/, "($1) $2")
+            value = value.replace(/(\d)(\d{4})$/, "$1-$2")
+            return value
         }
     </script>
 
-    <script> //Máscara para o CPF
+    <script>
+        //Máscara para o CPF
         function aplicarMascaraCPF(input) {
             let valor = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
             if (valor.length > 11) valor = valor.slice(0, 11); // Limita a 11 dígitos
@@ -122,11 +130,11 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous">
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous">
     </script>
 
-    
+
 </body>
 
 </html>

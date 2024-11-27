@@ -43,17 +43,29 @@
                                 ESTOQUE
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item " asp-controller="Produto" asp-action="Index">Produto</a></li>
-                                <li><a class="dropdown-item " asp-controller="Insumo" asp-action="Index">Insumo</a></li>
+                                <li><a class="dropdown-item " asp-controller="ProdutoEstoque" asp-action="Index">Produto</a></li>
+                                <li><a class="dropdown-item " asp-controller="InsumoEstoque" asp-action="Index">Insumo</a></li>
                                 <li>
+                                    <hr class="dropdown-divider">
+                                <li>
+                                <li><a class="dropdown-item " asp-controller="InsumoCompra" asp-action="Index">Entrada de Insumo</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                PERFIS
+                                LISTAS
                             </a>
                             <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Insumo" asp-action="Index">Insumo</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Produto" asp-action="Index">Produto</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                <li>
                                 <li>
                                     <a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a>
                                 </li>
@@ -72,8 +84,8 @@
                             </a>
                             <ul class="dropdown-menu">
 
-                                <li><a class="dropdown-item " asp-controller="Produto" asp-action="Create">Produto</a></li>
                                 <li><a class="dropdown-item " asp-controller="Insumo" asp-action="Create">Insumo</a></li>
+                                <li><a class="dropdown-item " asp-controller="Produto" asp-action="Create">Produto</a></li>                                
                                 <li>
                                     <hr class="dropdown-divider">
                                 <li>
@@ -119,9 +131,6 @@
             @RenderBody()
         </main>
     </div>
-
-    <script src="~/js/site.js"></script>
-    @RenderSection("js", required: false)
 
 </body>
 </html>

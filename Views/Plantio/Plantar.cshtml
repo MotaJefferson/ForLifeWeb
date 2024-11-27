@@ -2,11 +2,8 @@
 @model IEnumerable<(Plantio Plantio, Produto Produto)>
 
 @{
-
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Plantio";
 }
-
-
 
 <body class="fundo">  
     <main>
@@ -15,12 +12,9 @@
                 <span class="titulo_inicio">Pla</span><span class="titulo_meio">nt</span><span class=" titulo_fim">io</span>
             </h1>
 
-            <form method="post" asp-action="Plantar">
+            <form>
                 
                 @Html.AntiForgeryToken()
-
-                <div id="messageBox" class="alert" style="display: none;"></div>
-
 
                 <!--Campo oculto-->
 
@@ -61,7 +55,7 @@
 
                  <!-- Botão Plantar -->
    
-                <button type="submit" id="btn-plantar" class="btn btn-success mb-4 px-4">
+                <button type="button" id="btn-plantar" class="btn btn-success mb-4 px-4">
                     Plantar <i class="bi bi-tree-fill"></i>
                 </button>
 
@@ -155,10 +149,7 @@
                         </tbody>
                     </table>
                 </div>
-
-
-            </form>
-            
+            </form>        
             
         </div>
     </main>
@@ -353,130 +344,6 @@
         }
 
     </script>
-
-
-    <script>
-        document.querySelector('form').addEventListener('submit', async function (event) {
-        event.preventDefault();  // Impede o envio tradicional do formulário
-
-        const form = event.target;
-        const formData = new FormData(form);
-    
-        // Obter a div onde a mensagem será exibida
-        const messageBox = document.getElementById('messageBox');
-    
-        // Exibir uma mensagem de "enviando..." enquanto o processamento está em andamento
-        messageBox.style.display = 'block';
-        messageBox.className = 'alert alert-info'; // Exibe como uma mensagem informativa
-        messageBox.textContent = 'Enviando dados...';
-
-        try {
-            // Enviar a requisição AJAX com fetch
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!response.ok) {
-                throw new Error('Falha ao processar a requisição');
-            }
-
-            // Captura o retorno como JSON
-            const result = await response.json();
-
-            // Atualiza a classe do box de mensagem com base no sucesso ou erro
-            messageBox.className = result.success ? 'alert alert-success' : 'alert alert-danger';
-            messageBox.textContent = result.message;
-
-        } catch (error) {
-            console.error('Erro:', error);
-            messageBox.className = 'alert alert-danger';  // Caso ocorra erro na requisição
-            messageBox.textContent = 'Ocorreu um erro ao enviar os dados.';
-        }
-    });
-
-    </script>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
-
-    <script>
-        // Função para gerar o PDF com logo, título e tabela formatada
-        function gerarPDFPlantacoes() {
-            const checkboxes = document.querySelectorAll('.select-plantacao:checked'); // Apenas checkboxes marcados
-            const selectedRows = Array.from(checkboxes).map(cb => cb.closest('tr')); // Obter as linhas correspondentes
-
-            if (selectedRows.length === 0) {
-                alert("Por favor, selecione ao menos uma linha para gerar o relatório.");
-                return;
-            }
-
-            // Criar uma estrutura temporária para o conteúdo do PDF
-            const tempContainer = document.createElement('div');
-            tempContainer.style.padding = '20px'; // Adicionar margem ao conteúdo
-            tempContainer.innerHTML = `
-                <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                    <img src="/assets/logo_forlife.png" alt="Logo ForLife" style="height: 40px; margin-right: 10px;">
-                    <h1 style="font-size: 18px; font-family: Arial, sans-serif; margin: 0;">
-                        Relatório de Plantações
-                    </h1>
-                </div>
-                <table border="1" style="
-                    width: 100%;
-                    text-align: center;
-                    border-collapse: collapse;
-                    font-family: 'Arial', sans-serif;
-                    font-size: 12px;
-                    margin-top: 15px;
-                    border-spacing: 0;">
-                    <thead style="background-color: #d4edda; font-weight: bold; border-bottom: 2px solid #000;">
-                        <tr>
-                            <th style="padding: 6px; border-bottom: 1px solid #000;">ID</th>
-                            <th style="padding: 6px; border-bottom: 1px solid #000;">Produto</th>
-                            <th style="padding: 6px; border-bottom: 1px solid #000;">Quantidade</th>
-                            <th style="padding: 6px; border-bottom: 1px solid #000;">Data de Plantio</th>
-                            <th style="padding: 6px; border-bottom: 1px solid #000;">Data de Validade</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${selectedRows.map(row => {
-                const cells = row.querySelectorAll('td');
-                return `
-                                <tr>
-                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[1].textContent}</td>
-                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[2].textContent}</td>
-                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[3].textContent}</td>
-                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[4].textContent}</td>
-                                    <td style="padding: 6px; border-bottom: 1px solid #ddd;">${cells[5].textContent}</td>
-                                </tr>
-                            `;
-            }).join('')}
-                    </tbody>
-                </table>
-            `;
-
-            const options = {
-                margin: 10, // Margem do PDF (em mm)
-                filename: 'relatorio_plantacoes_selecionadas.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
-
-            // Gerar o PDF com o conteúdo filtrado
-            html2pdf().from(tempContainer).set(options).save();
-        }
-
-        // Adicionar evento ao botão de relatório
-        document.addEventListener('DOMContentLoaded', () => {
-            const btnRelatorio = document.getElementById('anc-relatorio-plantacao');
-            if (btnRelatorio) {
-                btnRelatorio.addEventListener('click', gerarPDFPlantacoes);
-            }
-        });
-    </script>
-
-
 
 </body>
 
