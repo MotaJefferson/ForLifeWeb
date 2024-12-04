@@ -58,7 +58,7 @@ Agradecimentos aos membros do grupo que tornaram este projeto possível:
 
 - [Gabriel Rodrigues](https://github.com/Gr213700)
 - [Jaqueline Ferreira](https://github.com/HiJaque)
-- [Marcela Guedes](https://github.com/usuario3)
+- [Marcela Guedes](https://github.com/mxccollins)
 - [Wender Rodrigues](https://github.com/RodriguesWender)
 
 ---
